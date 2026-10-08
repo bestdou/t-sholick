@@ -1,1046 +1,973 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>T-Sholick</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>T-Sholick</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#0b0f14;color:#fff;height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b0f14;
-      color: white;
-      height: 100vh;
-    }
+#auth{
+height:100vh;display:flex;align-items:center;justify-content:center;
+padding:20px;background:radial-gradient(circle at top,#182433,#0b0f14 60%)
+}
+.authbox{
+width:100%;max-width:400px;background:#111820;border:1px solid #26313d;
+border-radius:20px;padding:30px;box-shadow:0 20px 70px #0008
+}
+.logo{text-align:center;font-size:32px;font-weight:bold;margin-bottom:8px}
+.sub{text-align:center;color:#8996a3;margin-bottom:25px}
+.authbox input{
+width:100%;padding:14px;margin-bottom:11px;background:#0b1016;
+border:1px solid #293541;border-radius:12px;color:white;outline:none
+}
+.authbox button{
+width:100%;padding:14px;border:0;border-radius:12px;margin-top:4px
+}
+.primary{background:#347cff;color:white}
+.secondary{background:#18212b;color:white;border:1px solid #303c48!important}
+#error{text-align:center;color:#ff7070;font-size:14px;margin-top:12px;min-height:20px}
 
-    button,
-    input {
-      font: inherit;
-    }
+#app{height:100vh;display:flex}
+.sidebar{
+width:320px;background:#10161d;border-right:1px solid #26313d;
+display:flex;flex-direction:column
+}
+.sideTop{
+padding:18px;border-bottom:1px solid #26313d;
+display:flex;justify-content:space-between;align-items:center
+}
+.sideTop h1{font-size:22px}
+.logout{background:none;border:0;color:#ff7070}
 
-    .hidden {
-      display: none !important;
-    }
+.me{padding:14px 18px;color:#9aa5b0;border-bottom:1px solid #202a33}
+.sectionTitle{
+padding:15px 18px 7px;color:#788692;font-size:12px;
+text-transform:uppercase
+}
+#friends,#groups{overflow:auto}
+.item{
+padding:12px 18px;display:flex;align-items:center;gap:11px;
+cursor:pointer
+}
+.item:hover,.item.active{background:#19222c}
+.avatar{
+width:40px;height:40px;border-radius:50%;
+background:linear-gradient(135deg,#347cff,#7a4dff);
+display:flex;align-items:center;justify-content:center;
+font-weight:bold;flex-shrink:0
+}
+.info{min-width:0}
+.info strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:11px;color:#697580;margin-top:3px}
+.online{color:#53dc88}
+.add{
+margin:8px 18px;padding:11px;border-radius:10px;
+border:1px dashed #40505e;background:#111820;color:white
+}
 
-    /* LOGIN */
+.chat{flex:1;display:flex;flex-direction:column;min-width:0}
+.header{
+height:72px;padding:0 20px;border-bottom:1px solid #26313d;
+display:flex;align-items:center;gap:12px;background:#10161d
+}
+#chatTitle{font-size:17px;font-weight:bold}
+#chatSub{font-size:12px;color:#71808c;margin-top:3px}
+#messages{
+flex:1;overflow:auto;padding:24px;
+display:flex;flex-direction:column;gap:8px
+}
+.empty{margin:auto;text-align:center;color:#687681}
+.msg{
+max-width:min(70%,600px);padding:10px 14px;border-radius:16px;
+line-height:1.4;word-break:break-word
+}
+.mine{align-self:flex-end;background:#347cff;border-bottom-right-radius:4px}
+.theirs{align-self:flex-start;background:#202a34;border-bottom-left-radius:4px}
+.sender{font-size:11px;color:#8ea0ad;margin-bottom:3px}
+.time{font-size:10px;opacity:.6;display:block;text-align:right;margin-top:4px}
 
-    #authScreen {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background:
-        radial-gradient(circle at top, #182433, #0b0f14 55%);
-    }
+.composer{
+padding:14px;border-top:1px solid #26313d;display:flex;gap:9px
+}
+#message{
+flex:1;background:#0b1016;border:1px solid #2b3743;
+color:white;border-radius:13px;padding:13px;outline:none
+}
+#send{
+width:52px;border:0;border-radius:13px;background:#347cff;color:white;
+font-size:19px
+}
 
-    .authBox {
-      width: 100%;
-      max-width: 400px;
-      background: #111820;
-      border: 1px solid #26313d;
-      border-radius: 22px;
-      padding: 32px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.4);
-    }
+.back{display:none;background:none;border:0;color:white;font-size:22px}
 
-    .logo {
-      text-align: center;
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
+.modal{
+position:fixed;inset:0;background:#0009;display:flex;
+align-items:center;justify-content:center;padding:20px;z-index:10
+}
+.modalbox{
+width:100%;max-width:450px;background:#111820;
+border:1px solid #2b3743;border-radius:18px;padding:22px
+}
+.modalbox h2{margin-bottom:16px}
+.modalbox input,.modalbox select{
+width:100%;padding:13px;background:#0b1016;color:white;
+border:1px solid #2b3743;border-radius:10px;margin-bottom:10px
+}
+.modalButtons{display:flex;gap:8px;margin-top:8px}
+.modalButtons button{flex:1;padding:12px;border-radius:10px;border:0}
+.close{background:#202a34;color:white}
+.ok{background:#347cff;color:white}
 
-    .subtitle {
-      text-align: center;
-      color: #8d99a6;
-      margin-bottom: 28px;
-    }
+.checkUser{
+display:flex;align-items:center;gap:10px;padding:9px;
+background:#151e27;border-radius:9px;margin-bottom:6px
+}
+.checkUser input{width:auto;margin:0}
 
-    .authBox input {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
-      background: #0b1016;
-      border: 1px solid #293541;
-      color: white;
-      border-radius: 12px;
-      outline: none;
-    }
-
-    .authBox input:focus {
-      border-color: #4d9cff;
-    }
-
-    .primary {
-      width: 100%;
-      border: 0;
-      padding: 14px;
-      border-radius: 12px;
-      background: #347cff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 4px;
-    }
-
-    .secondary {
-      width: 100%;
-      border: 1px solid #303c48;
-      padding: 13px;
-      border-radius: 12px;
-      background: transparent;
-      color: white;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #authMessage {
-      min-height: 20px;
-      color: #ff7272;
-      font-size: 14px;
-      text-align: center;
-      margin-top: 14px;
-    }
-
-    /* APP */
-
-    #app {
-      height: 100vh;
-      display: flex;
-      overflow: hidden;
-    }
-
-    .sidebar {
-      width: 310px;
-      background: #10161d;
-      border-right: 1px solid #26313d;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sideHeader {
-      padding: 20px;
-      border-bottom: 1px solid #26313d;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .sideHeader h1 {
-      font-size: 22px;
-    }
-
-    .logout {
-      border: 0;
-      background: transparent;
-      color: #ff7070;
-      cursor: pointer;
-    }
-
-    .myName {
-      padding: 14px 20px;
-      color: #8f9ba8;
-      font-size: 13px;
-      border-bottom: 1px solid #1f2933;
-    }
-
-    .friendsTitle {
-      padding: 18px 20px 10px;
-      color: #8793a0;
-      font-size: 13px;
-      text-transform: uppercase;
-    }
-
-    #usersList {
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .userItem {
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: .15s;
-    }
-
-    .userItem:hover,
-    .userItem.active {
-      background: #19222c;
-    }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #347cff, #7a4dff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    .userInfo {
-      min-width: 0;
-    }
-
-    .userInfo strong {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .online {
-      color: #53dc88;
-      font-size: 12px;
-      margin-top: 3px;
-    }
-
-    .offline {
-      color: #697580;
-      font-size: 12px;
-      margin-top: 3px;
-    }
-
-    /* CHAT */
-
-    .chat {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .chatHeader {
-      height: 74px;
-      border-bottom: 1px solid #26313d;
-      display: flex;
-      align-items: center;
-      padding: 0 22px;
-      gap: 12px;
-      background: #10161d;
-    }
-
-    #chatName {
-      font-size: 17px;
-    }
-
-    #chatStatus {
-      font-size: 12px;
-      color: #697580;
-      margin-top: 3px;
-    }
-
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 25px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .empty {
-      margin: auto;
-      text-align: center;
-      color: #6e7a86;
-    }
-
-    .message {
-      max-width: min(70%, 600px);
-      padding: 10px 14px;
-      border-radius: 16px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-
-    .message.mine {
-      align-self: flex-end;
-      background: #347cff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .message.theirs {
-      align-self: flex-start;
-      background: #202a34;
-      border-bottom-left-radius: 4px;
-    }
-
-    .messageTime {
-      display: block;
-      font-size: 10px;
-      opacity: .65;
-      margin-top: 4px;
-      text-align: right;
-    }
-
-    .composer {
-      padding: 15px;
-      border-top: 1px solid #26313d;
-      background: #10161d;
-      display: flex;
-      gap: 10px;
-    }
-
-    #messageInput {
-      flex: 1;
-      border: 1px solid #2b3743;
-      background: #0b1016;
-      color: white;
-      border-radius: 14px;
-      padding: 13px 15px;
-      outline: none;
-    }
-
-    #messageInput:focus {
-      border-color: #347cff;
-    }
-
-    #sendButton {
-      width: 50px;
-      border: 0;
-      border-radius: 14px;
-      background: #347cff;
-      color: white;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-    #sendButton:disabled {
-      opacity: .35;
-      cursor: default;
-    }
-
-    .mobileBack {
-      display: none;
-      border: 0;
-      background: transparent;
-      color: white;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 700px) {
-      .sidebar {
-        width: 100%;
-      }
-
-      .chat {
-        display: none;
-      }
-
-      #app.chatOpen .sidebar {
-        display: none;
-      }
-
-      #app.chatOpen .chat {
-        display: flex;
-      }
-
-      .mobileBack {
-        display: block;
-      }
-
-      .message {
-        max-width: 85%;
-      }
-    }
-  </style>
+@media(max-width:700px){
+.sidebar{width:100%}
+.chat{display:none}
+#app.openChat .sidebar{display:none}
+#app.openChat .chat{display:flex}
+.back{display:block}
+.msg{max-width:85%}
+}
+</style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="authScreen">
+<div id="auth">
+<div class="authbox">
+<div class="logo">T-Sholick</div>
+<div class="sub">Arkadaşlarınla özel olarak sohbet et.</div>
 
-  <div class="authBox">
+<input id="email" type="email" placeholder="E-posta">
+<input id="password" type="password" placeholder="Şifre">
+<input id="username" placeholder="Kullanıcı adı">
 
-    <div class="logo">T-Sholick</div>
+<button class="primary" id="register">Hesap oluştur</button>
+<button class="secondary" id="login">Giriş yap</button>
 
-    <div class="subtitle">
-      Arkadaşlarınla özel olarak sohbet et.
-    </div>
+<div id="error"></div>
+</div>
+</div>
 
-    <input
-      id="email"
-      type="email"
-      placeholder="E-posta"
-      autocomplete="email"
-    >
+<div id="app" class="hidden">
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Şifre"
-      autocomplete="current-password"
-    >
+<aside class="sidebar">
 
-    <input
-      id="username"
-      type="text"
-      placeholder="Kullanıcı adı (kayıt olurken)"
-      maxlength="20"
-    >
+<div class="sideTop">
+<h1>T-Sholick</h1>
+<button class="logout" id="logout">Çıkış</button>
+</div>
 
-    <button class="primary" id="registerButton">
-      Hesap oluştur
-    </button>
+<div class="me" id="me">Kullanıcı</div>
 
-    <button class="secondary" id="loginButton">
-      Giriş yap
-    </button>
+<div class="sectionTitle">Arkadaşlar</div>
+<div id="friends"></div>
 
-    <div id="authMessage"></div>
+<button class="add" id="addFriend">＋ Arkadaş ekle</button>
 
-  </div>
+<div class="sectionTitle">Gruplar</div>
+<div id="groups"></div>
+
+<button class="add" id="createGroup">＋ Grup oluştur</button>
+
+</aside>
+
+<main class="chat">
+
+<div class="header">
+<button class="back" id="back">←</button>
+<div class="avatar" id="chatAvatar">?</div>
+<div>
+<div id="chatTitle">T-Sholick</div>
+<div id="chatSub">Bir arkadaş veya grup seç</div>
+</div>
+</div>
+
+<div id="messages">
+<div class="empty">Bir sohbet seç 💬</div>
+</div>
+
+<div class="composer">
+<input id="message" placeholder="Mesaj yaz..." disabled>
+<button id="send" disabled>➤</button>
+</div>
+
+</main>
 </div>
 
 
-<!-- CHAT APP -->
-<div id="app" class="hidden">
+<!-- ARKADAŞ EKLE MODAL -->
 
-  <aside class="sidebar">
-
-    <div class="sideHeader">
-      <h1>T-Sholick</h1>
-      <button class="logout" id="logoutButton">
-        Çıkış
-      </button>
-    </div>
-
-    <div class="myName" id="myName">
-      Kullanıcı
-    </div>
-
-    <div class="friendsTitle">
-      Arkadaşlar
-    </div>
-
-    <div id="usersList"></div>
-
-  </aside>
+<div class="modal hidden" id="friendModal">
+<div class="modalbox">
+<h2>Arkadaş ekle</h2>
+<input id="friendUsername" placeholder="Kullanıcı adı">
+<div class="modalButtons">
+<button class="close" onclick="closeModal('friendModal')">İptal</button>
+<button class="ok" id="sendRequest">İstek gönder</button>
+</div>
+</div>
+</div>
 
 
-  <main class="chat">
+<!-- GRUP MODAL -->
 
-    <div class="chatHeader">
+<div class="modal hidden" id="groupModal">
+<div class="modalbox">
+<h2>Yeni grup</h2>
 
-      <button class="mobileBack" id="backButton">
-        ←
-      </button>
+<input id="groupName" placeholder="Grup adı">
 
-      <div class="avatar" id="chatAvatar">
-        ?
-      </div>
+<div id="friendChoices"></div>
 
-      <div>
-        <div id="chatName">
-          Bir arkadaş seç
-        </div>
+<div class="modalButtons">
+<button class="close" onclick="closeModal('groupModal')">İptal</button>
+<button class="ok" id="makeGroup">Grubu oluştur</button>
+</div>
 
-        <div id="chatStatus">
-          Sohbet başlatmak için arkadaş seç.
-        </div>
-      </div>
-
-    </div>
+</div>
+</div>
 
 
-    <div id="messages">
+<!-- İSTEKLER MODAL -->
 
-      <div class="empty">
-        Soldan bir arkadaş seçerek sohbete başla 💬
-      </div>
-
-    </div>
-
-
-    <div class="composer">
-
-      <input
-        id="messageInput"
-        type="text"
-        placeholder="Mesaj yaz..."
-        autocomplete="off"
-        disabled
-      >
-
-      <button id="sendButton" disabled>
-        ➤
-      </button>
-
-    </div>
-
-  </main>
-
+<div class="modal hidden" id="requestsModal">
+<div class="modalbox">
+<h2>Arkadaşlık istekleri</h2>
+<div id="requests"></div>
+<button class="close" style="width:100%;margin-top:12px;padding:12px;border:0;border-radius:10px"
+onclick="closeModal('requestsModal')">Kapat</button>
+</div>
 </div>
 
 
 <script type="module">
 
-  import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+import {
+getDatabase,
+ref,
+set,
+push,
+onValue,
+get,
+update
+}
+from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+
+const firebaseConfig={
+apiKey:"AIzaSyDW_5z_vOGLdXY2vZ1BtSegVXXSud6Mqo8",
+authDomain:"t-sholick.firebaseapp.com",
+databaseURL:"https://t-sholick-default-rtdb.firebaseio.com",
+projectId:"t-sholick",
+storageBucket:"t-sholick.firebasestorage.app",
+messagingSenderId:"903414311425",
+appId:"1:903414311425:web:16e66918d4ad7cf6412e00",
+measurementId:"G-X9Y2GWSJHG"
+};
 
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
-  } from
-    "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+const firebase=initializeApp(firebaseConfig);
+const auth=getAuth(firebase);
+const db=getDatabase(firebase);
 
-  import {
-    getDatabase,
-    ref,
-    set,
-    push,
-    onValue
-  } from
-    "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
+let meUser=null;
+let users={};
+let friends={};
+let groups={};
+let currentChat=null;
+let messageListener=null;
 
-  /* FIREBASE */
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDW_5z_vOGLdXY2vZ1BtSegVXXSud6Mqo8",
-    authDomain: "t-sholick.firebaseapp.com",
-    databaseURL: "https://t-sholick-default-rtdb.firebaseio.com",
-    projectId: "t-sholick",
-    storageBucket: "t-sholick.firebasestorage.app",
-    messagingSenderId: "903414311425",
-    appId: "1:903414311425:web:16e66918d4ad7cf6412e00",
-    measurementId: "G-X9Y2GWSJHG"
-  };
+const $=id=>document.getElementById(id);
 
+function esc(x){
+return String(x||"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
 
-  const appFirebase = initializeApp(firebaseConfig);
 
-  const auth = getAuth(appFirebase);
+function errorText(e){
 
-  const db = getDatabase(appFirebase);
+const map={
+"auth/email-already-in-use":"Bu e-posta zaten kayıtlı.",
+"auth/invalid-email":"Geçersiz e-posta.",
+"auth/weak-password":"Şifre en az 6 karakter olmalı.",
+"auth/invalid-credential":"E-posta veya şifre yanlış.",
+"auth/invalid-login-credentials":"E-posta veya şifre yanlış."
+};
 
+$("error").textContent=map[e.code]||"Bir hata oluştu.";
 
-  /* ELEMENTS */
+}
 
-  const authScreen = document.getElementById("authScreen");
-  const appScreen = document.getElementById("app");
 
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const usernameInput = document.getElementById("username");
+$("register").onclick=async()=>{
 
-  const authMessage = document.getElementById("authMessage");
+const email=$("email").value.trim();
+const password=$("password").value;
+const username=$("username").value.trim();
 
-  const usersList = document.getElementById("usersList");
+if(!email||!password||!username){
+$("error").textContent="Tüm alanları doldur.";
+return;
+}
 
-  const myName = document.getElementById("myName");
+if(username.length<3){
+$("error").textContent="Kullanıcı adı en az 3 karakter.";
+return;
+}
 
-  const chatName = document.getElementById("chatName");
-  const chatStatus = document.getElementById("chatStatus");
-  const chatAvatar = document.getElementById("chatAvatar");
+try{
 
-  const messages = document.getElementById("messages");
+const result=await createUserWithEmailAndPassword(
+auth,email,password
+);
 
-  const messageInput = document.getElementById("messageInput");
-  const sendButton = document.getElementById("sendButton");
+await set(ref(db,"users/"+result.user.uid),{
+username,
+createdAt:Date.now(),
+online:true
+});
 
-  const logoutButton = document.getElementById("logoutButton");
+}catch(e){
+errorText(e);
+}
 
-  const backButton = document.getElementById("backButton");
+};
 
-  let currentUser = null;
-  let currentChatUser = null;
-  let unsubscribeMessages = null;
 
+$("login").onclick=async()=>{
 
-  /* HATA */
+try{
 
-  function showError(error) {
+await signInWithEmailAndPassword(
+auth,
+$("email").value.trim(),
+$("password").value
+);
 
-    console.error(error);
+}catch(e){
+errorText(e);
+}
 
-    const errors = {
-      "auth/email-already-in-use":
-        "Bu e-posta zaten kayıtlı.",
+};
 
-      "auth/invalid-email":
-        "Geçersiz e-posta adresi.",
 
-      "auth/weak-password":
-        "Şifre en az 6 karakter olmalı.",
+$("logout").onclick=async()=>{
 
-      "auth/invalid-credential":
-        "E-posta veya şifre yanlış.",
+if(meUser){
+await update(ref(db,"users/"+meUser.uid),{online:false});
+}
 
-      "auth/invalid-login-credentials":
-        "E-posta veya şifre yanlış."
-    };
+await signOut(auth);
 
-    authMessage.textContent =
-      errors[error.code] ||
-      "Bir hata oluştu. Tekrar dene.";
-  }
+};
 
 
-  /* REGISTER */
+onAuthStateChanged(auth,async user=>{
 
-  document
-    .getElementById("registerButton")
-    .addEventListener("click", async () => {
+if(!user){
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      const username = usernameInput.value.trim();
+$("auth").classList.remove("hidden");
+$("app").classList.add("hidden");
+return;
 
-      if (!email || !password || !username) {
-        authMessage.textContent =
-          "E-posta, şifre ve kullanıcı adı gerekli.";
-        return;
-      }
+}
 
-      if (username.length < 3) {
-        authMessage.textContent =
-          "Kullanıcı adı en az 3 karakter olmalı.";
-        return;
-      }
+meUser=user;
 
-      try {
+$("auth").classList.add("hidden");
+$("app").classList.remove("hidden");
 
-        authMessage.textContent =
-          "Hesap oluşturuluyor...";
+await update(ref(db,"users/"+user.uid),{online:true});
 
-        const result =
-          await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
+loadUsers();
+loadMe();
+loadFriends();
+loadGroups();
+loadRequests();
 
-        const user = result.user;
+});
 
-        await set(
-          ref(db, "users/" + user.uid),
-          {
-            username: username,
-            email: email,
-            createdAt: Date.now(),
-            online: true
-          }
-        );
 
-        authMessage.textContent = "";
+function loadMe(){
 
-      } catch (error) {
+onValue(ref(db,"users/"+meUser.uid),snap=>{
 
-        showError(error);
+const u=snap.val();
 
-      }
+if(u){
+$("me").textContent="Sen: "+u.username;
+}
 
-    });
+});
 
+}
 
-  /* LOGIN */
 
-  document
-    .getElementById("loginButton")
-    .addEventListener("click", async () => {
+function loadUsers(){
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+onValue(ref(db,"users"),snap=>{
+users=snap.val()||{};
+});
 
-      if (!email || !password) {
-        authMessage.textContent =
-          "E-posta ve şifre gerekli.";
-        return;
-      }
+}
 
-      try {
 
-        authMessage.textContent =
-          "Giriş yapılıyor...";
+function loadFriends(){
 
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+onValue(ref(db,"friends/"+meUser.uid),snap=>{
 
-        authMessage.textContent = "";
+friends=snap.val()||{};
+renderFriends();
 
-      } catch (error) {
+});
 
-        showError(error);
+}
 
-      }
 
-    });
+function renderFriends(){
 
+$("friends").innerHTML="";
 
-  /* LOGOUT */
+Object.keys(friends).forEach(uid=>{
 
-  logoutButton.addEventListener(
-    "click",
-    async () => {
+const u=users[uid];
 
-      if (currentUser) {
+if(!u)return;
 
-        await set(
-          ref(db, "users/" + currentUser.uid + "/online"),
-          false
-        );
+const item=document.createElement("div");
 
-      }
+item.className="item";
 
-      await signOut(auth);
+item.innerHTML=`
+<div class="avatar">
+${esc(u.username[0].toUpperCase())}
+</div>
+<div class="info">
+<strong>${esc(u.username)}</strong>
+<div class="status ${u.online?"online":""}">
+${u.online?"● Çevrimiçi":"Çevrimdışı"}
+</div>
+</div>
+`;
 
-    }
-  );
+item.onclick=()=>openPrivate(uid,u);
 
+$("friends").appendChild(item);
 
-  /* AUTH STATE */
+});
 
-  onAuthStateChanged(
-    auth,
-    async (user) => {
+if(Object.keys(friends).length===0){
 
-      currentUser = user;
+$("friends").innerHTML=
+`<div style="padding:10px 18px;color:#687681;font-size:13px">
+Henüz arkadaşın yok.
+</div>`;
 
-      if (!user) {
+}
 
-        authScreen.classList.remove("hidden");
-        appScreen.classList.add("hidden");
+}
 
-        return;
-      }
 
-      authScreen.classList.add("hidden");
-      appScreen.classList.remove("hidden");
+$("addFriend").onclick=()=>{
+$("friendModal").classList.remove("hidden");
+$("friendUsername").value="";
+};
 
-      await set(
-        ref(db, "users/" + user.uid + "/online"),
-        true
-      );
 
-      loadMyProfile();
-      loadUsers();
+$("sendRequest").onclick=async()=>{
 
-    }
-  );
+const name=$("friendUsername").value.trim().toLowerCase();
 
+if(!name)return;
 
-  /* MY PROFILE */
+let found=null;
 
-  function loadMyProfile() {
+for(const [uid,u] of Object.entries(users)){
 
-    onValue(
-      ref(db, "users/" + currentUser.uid),
-      snapshot => {
+if(
+uid!==meUser.uid &&
+(u.username||"").toLowerCase()===name
+){
+found={uid,...u};
+break;
+}
 
-        const data = snapshot.val();
+}
 
-        if (data) {
+if(!found){
+alert("Bu kullanıcı bulunamadı.");
+return;
+}
 
-          myName.textContent =
-            "Sen: " + data.username;
+await set(
+ref(db,"friendRequests/"+found.uid+"/"+meUser.uid),
+{
+from:meUser.uid,
+username:users[meUser.uid]?.username||"Kullanıcı",
+createdAt:Date.now()
+}
+);
 
-        }
+alert("Arkadaşlık isteği gönderildi.");
 
-      }
-    );
+closeModal("friendModal");
 
-  }
+};
 
 
-  /* USERS */
+function loadRequests(){
 
-  function loadUsers() {
+onValue(
+ref(db,"friendRequests/"+meUser.uid),
+snap=>{
 
-    onValue(
-      ref(db, "users"),
-      snapshot => {
+const requests=snap.val()||{};
+const count=Object.keys(requests).length;
 
-        usersList.innerHTML = "";
+if(count>0){
 
-        const users = snapshot.val() || {};
+$("requestsModal").dataset.has="true";
 
-        Object
-          .entries(users)
-          .forEach(([uid, user]) => {
+}
 
-            if (uid === currentUser.uid) {
-              return;
-            }
+renderRequests(requests);
 
-            const item =
-              document.createElement("div");
+});
 
-            item.className = "userItem";
+}
 
-            item.innerHTML = `
-              <div class="avatar">
-                ${(user.username || "?")
-                  .charAt(0)
-                  .toUpperCase()}
-              </div>
 
-              <div class="userInfo">
+function renderRequests(requests){
 
-                <strong>
-                  ${escapeHtml(user.username || "Kullanıcı")}
-                </strong>
+$("requests").innerHTML="";
 
-                <div class="${user.online ? "online" : "offline"}">
-                  ${user.online ? "● Çevrimiçi" : "Çevrimdışı"}
-                </div>
+for(const [uid,r] of Object.entries(requests)){
 
-              </div>
-            `;
+const div=document.createElement("div");
 
-            item.addEventListener(
-              "click",
-              () => openChat(uid, user)
-            );
+div.style.cssText=
+"padding:12px;background:#18212b;border-radius:10px;margin-bottom:8px";
 
-            usersList.appendChild(item);
+div.innerHTML=`
+<strong>${esc(r.username)}</strong>
+<div style="margin-top:8px;display:flex;gap:6px">
+<button class="ok" style="padding:7px;border:0;border-radius:7px"
+data-uid="${uid}">Kabul et</button>
+<button class="close" style="padding:7px;border:0;border-radius:7px"
+data-deny="${uid}">Reddet</button>
+</div>
+`;
 
-          });
+div.querySelector("[data-uid]").onclick=
+()=>acceptFriend(uid);
 
-      }
-    );
+div.querySelector("[data-deny]").onclick=
+()=>rejectFriend(uid);
 
-  }
+$("requests").appendChild(div);
 
+}
 
-  /* OPEN CHAT */
+if(Object.keys(requests).length){
+$("requestsModal").classList.remove("hidden");
+}
 
-  function openChat(uid, user) {
+}
 
-    currentChatUser = {
-      uid: uid,
-      ...user
-    };
 
-    chatName.textContent =
-      user.username || "Kullanıcı";
+async function acceptFriend(uid){
 
-    chatStatus.textContent =
-      user.online
-        ? "● Çevrimiçi"
-        : "Çevrimdışı";
+const myName=users[meUser.uid]?.username||"Kullanıcı";
+const theirName=users[uid]?.username||"Kullanıcı";
 
-    chatStatus.style.color =
-      user.online
-        ? "#53dc88"
-        : "#697580";
+const changes={};
 
-    chatAvatar.textContent =
-      (user.username || "?")
-        .charAt(0)
-        .toUpperCase();
+changes[`friends/${meUser.uid}/${uid}`]=true;
+changes[`friends/${uid}/${meUser.uid}`]=true;
 
-    messageInput.disabled = false;
-    sendButton.disabled = false;
+await update(ref(db),changes);
 
-    messages.innerHTML = "";
+await set(
+ref(db,"friendRequests/"+meUser.uid+"/"+uid),
+null
+);
 
-    appScreen.classList.add("chatOpen");
+}
 
-    listenMessages();
 
-  }
+async function rejectFriend(uid){
 
+await set(
+ref(db,"friendRequests/"+meUser.uid+"/"+uid),
+null
+);
 
-  /* CHAT LISTENER */
+}
 
-  function listenMessages() {
 
-    if (unsubscribeMessages) {
-      unsubscribeMessages();
-    }
+function loadGroups(){
 
-    const ids = [
-      currentUser.uid,
-      currentChatUser.uid
-    ].sort();
+onValue(ref(db,"groups"),snap=>{
 
-    const chatId =
-      ids[0] + "_" + ids[1];
+const all=snap.val()||{};
+groups={};
 
-    const chatRef =
-      ref(db, "chats/" + chatId + "/messages");
+for(const [id,g] of Object.entries(all)){
 
-    unsubscribeMessages =
-      onValue(chatRef, snapshot => {
+if(g.members && g.members[meUser.uid]){
+groups[id]=g;
+}
 
-        messages.innerHTML = "";
+}
 
-        const data =
-          snapshot.val() || {};
+renderGroups();
 
-        const list =
-          Object.values(data)
-            .sort((a, b) =>
-              (a.timestamp || 0) -
-              (b.timestamp || 0)
-            );
+});
 
-        if (list.length === 0) {
+}
 
-          messages.innerHTML = `
-            <div class="empty">
-              Henüz mesaj yok.<br>
-              İlk mesajı sen gönder 👋
-            </div>
-          `;
 
-          return;
-        }
+function renderGroups(){
 
-        list.forEach(message => {
+$("groups").innerHTML="";
 
-          const bubble =
-            document.createElement("div");
+for(const [id,g] of Object.entries(groups)){
 
-          bubble.className =
-            "message " +
-            (
-              message.senderId === currentUser.uid
-                ? "mine"
-                : "theirs"
-            );
+const item=document.createElement("div");
 
-          const time =
-            new Date(
-              message.timestamp || Date.now()
-            )
-            .toLocaleTimeString(
-              "tr-TR",
-              {
-                hour: "2-digit",
-                minute: "2-digit"
-              }
-            );
+item.className="item";
 
-          bubble.innerHTML = `
-            ${escapeHtml(message.text)}
-            <span class="messageTime">
-              ${time}
-            </span>
-          `;
+item.innerHTML=`
+<div class="avatar">
+${esc((g.name||"G")[0].toUpperCase())}
+</div>
+<div class="info">
+<strong>${esc(g.name)}</strong>
+<div class="status">
+${Object.keys(g.members||{}).length} üye
+</div>
+</div>
+`;
 
-          messages.appendChild(bubble);
+item.onclick=()=>openGroup(id,g);
 
-        });
+$("groups").appendChild(item);
 
-        messages.scrollTop =
-          messages.scrollHeight;
+}
 
-      });
+if(Object.keys(groups).length===0){
 
-  }
+$("groups").innerHTML=
+`<div style="padding:10px 18px;color:#687681;font-size:13px">
+Henüz grup yok.
+</div>`;
 
+}
 
-  /* SEND MESSAGE */
+}
 
-  async function sendMessage() {
 
-    const text =
-      messageInput.value.trim();
+$("createGroup").onclick=()=>{
 
-    if (!text || !currentChatUser) {
-      return;
-    }
+$("groupModal").classList.remove("hidden");
+$("groupName").value="";
 
-    const ids = [
-      currentUser.uid,
-      currentChatUser.uid
-    ].sort();
+$("friendChoices").innerHTML="";
 
-    const chatId =
-      ids[0] + "_" + ids[1];
+for(const uid of Object.keys(friends)){
 
-    const messagesRef =
-      ref(db, "chats/" + chatId + "/messages");
+const u=users[uid];
 
-    await push(
-      messagesRef,
-      {
-        senderId: currentUser.uid,
-        receiverId: currentChatUser.uid,
-        text: text,
-        timestamp: Date.now()
-      }
-    );
+if(!u)continue;
 
-    messageInput.value = "";
-    messageInput.focus();
+const div=document.createElement("label");
 
-  }
+div.className="checkUser";
 
+div.innerHTML=`
+<input type="checkbox" value="${uid}">
+<span>${esc(u.username)}</span>
+`;
 
-  sendButton.addEventListener(
-    "click",
-    sendMessage
-  );
+$("friendChoices").appendChild(div);
 
+}
 
-  messageInput.addEventListener(
-    "keydown",
-    event => {
+};
 
-      if (event.key === "Enter") {
-        sendMessage();
-      }
 
-    }
-  );
+$("makeGroup").onclick=async()=>{
 
+const name=$("groupName").value.trim();
 
-  backButton.addEventListener(
-    "click",
-    () => {
+if(!name){
+alert("Grup adı yaz.");
+return;
+}
 
-      appScreen.classList.remove("chatOpen");
+const selected=[
+...$("friendChoices").querySelectorAll("input:checked")
+].map(x=>x.value);
 
-      currentChatUser = null;
+const members={
+[meUser.uid]:true
+};
 
-      if (unsubscribeMessages) {
-        unsubscribeMessages();
-        unsubscribeMessages = null;
-      }
+selected.forEach(uid=>{
+members[uid]=true;
+});
 
-      messageInput.disabled = true;
-      sendButton.disabled = true;
+const groupRef=push(ref(db,"groups"));
 
-    }
-  );
+await set(groupRef,{
+name,
+owner:meUser.uid,
+createdAt:Date.now(),
+members
+});
 
+closeModal("groupModal");
 
-  /* HTML SECURITY */
+};
 
-  function escapeHtml(value) {
 
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+function openPrivate(uid,u){
 
-  }
+currentChat={
+type:"private",
+id:uid,
+name:u.username,
+uid
+};
+
+$("chatTitle").textContent=u.username;
+$("chatSub").textContent=u.online?"● Çevrimiçi":"Çevrimdışı";
+$("chatSub").style.color=u.online?"#53dc88":"#71808c";
+$("chatAvatar").textContent=
+(u.username||"?")[0].toUpperCase();
+
+$("message").disabled=false;
+$("send").disabled=false;
+
+$("app").classList.add("openChat");
+
+listenMessages();
+
+}
+
+
+function openGroup(id,g){
+
+currentChat={
+type:"group",
+id,
+name:g.name,
+group:g
+};
+
+$("chatTitle").textContent=g.name;
+$("chatSub").textContent=
+Object.keys(g.members||{}).length+" üye";
+
+$("chatSub").style.color="#71808c";
+$("chatAvatar").textContent=
+(g.name||"G")[0].toUpperCase();
+
+$("message").disabled=false;
+$("send").disabled=false;
+
+$("app").classList.add("openChat");
+
+listenMessages();
+
+}
+
+
+function privateId(a,b){
+
+return [a,b].sort().join("_");
+
+}
+
+
+function listenMessages(){
+
+if(messageListener){
+messageListener();
+messageListener=null;
+}
+
+let path;
+
+if(currentChat.type==="private"){
+
+path=
+"chats/"+privateId(meUser.uid,currentChat.uid)+"/messages";
+
+}else{
+
+path=
+"groups/"+currentChat.id+"/messages";
+
+}
+
+messageListener=onValue(ref(db,path),snap=>{
+
+$("messages").innerHTML="";
+
+const data=snap.val()||{};
+
+const list=Object.values(data).sort(
+(a,b)=>(a.timestamp||0)-(b.timestamp||0)
+);
+
+if(!list.length){
+
+$("messages").innerHTML=
+`<div class="empty">Henüz mesaj yok.<br>İlk mesajı sen gönder 👋</div>`;
+
+return;
+
+}
+
+list.forEach(m=>{
+
+const div=document.createElement("div");
+
+div.className=
+"msg "+(m.senderId===meUser.uid?"mine":"theirs");
+
+let sender="";
+
+if(currentChat.type==="group" &&
+m.senderId!==meUser.uid){
+
+sender=
+`<div class="sender">${esc(
+users[m.senderId]?.username||"Kullanıcı"
+)}</div>`;
+
+}
+
+const time=new Date(
+m.timestamp||Date.now()
+).toLocaleTimeString("tr-TR",{
+hour:"2-digit",
+minute:"2-digit"
+});
+
+div.innerHTML=
+sender+
+esc(m.text)+
+`<span class="time">${time}</span>`;
+
+$("messages").appendChild(div);
+
+});
+
+$("messages").scrollTop=$("messages").scrollHeight;
+
+});
+
+}
+
+
+async function sendMessage(){
+
+const text=$("message").value.trim();
+
+if(!text||!currentChat)return;
+
+let path;
+
+if(currentChat.type==="private"){
+
+path=
+"chats/"+privateId(meUser.uid,currentChat.uid)+"/messages";
+
+}else{
+
+path=
+"groups/"+currentChat.id+"/messages";
+
+}
+
+await push(ref(db,path),{
+senderId:meUser.uid,
+text,
+timestamp:Date.now()
+});
+
+$("message").value="";
+$("message").focus();
+
+}
+
+
+$("send").onclick=sendMessage;
+
+$("message").addEventListener("keydown",e=>{
+
+if(e.key==="Enter"){
+e.preventDefault();
+sendMessage();
+}
+
+});
+
+
+$("back").onclick=()=>{
+
+$("app").classList.remove("openChat");
+
+currentChat=null;
+
+if(messageListener){
+messageListener();
+messageListener=null;
+}
+
+$("message").disabled=true;
+$("send").disabled=true;
+
+};
+
+
+function closeModal(id){
+$(id).classList.add("hidden");
+}
+
+window.closeModal=closeModal;
 
 </script>
-
 </body>
 </html>
