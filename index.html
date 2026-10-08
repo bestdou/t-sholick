@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T-Sholick | Profil</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    height: 60px;
+    border-bottom: 1px solid #262626;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    background: #000;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.search {
+    background: #262626;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+}
+
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.profile {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #feda75, #d62976, #4f5bd5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    font-weight: bold;
+}
+
+.username {
+    font-size: 25px;
+    margin-bottom: 20px;
+}
+
+button {
+    background: #0095f6;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.stats {
+    display: flex;
+    gap: 35px;
+    margin-bottom: 20px;
+}
+
+.stats b {
+    font-size: 18px;
+}
+
+.bio {
+    line-height: 1.5;
+}
+
+.posts {
+    border-top: 1px solid #262626;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.post {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #222, #555);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
+    cursor: pointer;
+}
+
+.post:hover {
+    opacity: .7;
+}
+
+@media(max-width: 600px) {
+    header {
+        padding: 0 15px;
+    }
+
+    .search {
+        display: none;
+    }
+
+    main {
+        margin: 20px auto;
+    }
+
+    .profile {
+        gap: 25px;
+    }
+
+    .avatar {
+        width: 90px;
+        height: 90px;
+        font-size: 35px;
+    }
+
+    .username {
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">T-Sholick</div>
+    <input class="search" placeholder="Ara...">
+    <div>♡　♙</div>
+</header>
+
+<main>
+
+<section class="profile">
+
+    <div class="avatar">T</div>
+
+    <div>
+        <div class="username">
+            @tsholick
+            <button onclick="follow()">Takip Et</button>
+        </div>
+
+        <div class="stats">
+            <span><b>12</b> gönderi</span>
+            <span><b>1.2K</b> takipçi</span>
+            <span><b>250</b> takip</span>
+        </div>
+
+        <div class="bio">
+            🚀 T-Sholick<br>
+            🎮 Oyun • Teknoloji • Eğlence<br>
+            🔥 Kendi dünyam
+        </div>
+    </div>
+
+</section>
+
+<section class="posts">
+
+    <div class="post">📸</div>
+    <div class="post">🎮</div>
+    <div class="post">🔥</div>
+    <div class="post">🚀</div>
+    <div class="post">😎</div>
+    <div class="post">🌎</div>
+    <div class="post">💻</div>
+    <div class="post">🎬</div>
+    <div class="post">⭐</div>
+
+</section>
+
+</main>
+
+<script>
+function follow() {
+    alert("Takip edildi! ❤️");
+}
+</script>
+
+</body>
+</html>
