@@ -4,7 +4,293 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>T-Sholick</title>
-<style>
+
+/* T-SHOLICK — PREMIUM UI REDESIGN */
+:root{
+  color-scheme:dark;
+  --bg:#080b14;
+  --panel:#0e1320;
+  --panel2:#141b2b;
+  --line:rgba(160,180,255,.12);
+  --blue:#6c7bff;
+  --muted:#929db5;
+  --green:#4ce0ac;
+}
+*{box-sizing:border-box}
+body{
+  background:
+    radial-gradient(ellipse at 10% 0%,rgba(93,80,255,.13),transparent 36%),
+    radial-gradient(ellipse at 95% 95%,rgba(25,153,255,.08),transparent 35%),
+    #080b14;
+  color:#f4f6ff;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  letter-spacing:.05px;
+}
+button,input{transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+button{font-weight:600}
+button:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
+input:focus{
+  border-color:#7582ff!important;
+  box-shadow:0 0 0 3px rgba(108,123,255,.13);
+}
+.hidden{display:none!important}
+
+/* GİRİŞ EKRANI */
+.auth{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 20%,rgba(94,88,255,.23),transparent 48%),
+    radial-gradient(ellipse at 85% 80%,rgba(39,142,255,.12),transparent 42%),
+    #080b14;
+}
+.auth:before,.auth:after{
+  content:"";
+  position:absolute;
+  width:320px;height:320px;
+  border:1px solid rgba(135,144,255,.12);
+  border-radius:50%;
+  pointer-events:none;
+}
+.auth:before{top:-180px;left:-100px;box-shadow:0 0 0 35px #7582ff08,0 0 0 70px #7582ff06}
+.auth:after{bottom:-220px;right:-90px;box-shadow:0 0 0 35px #7582ff08,0 0 0 70px #7582ff06}
+.authbox{
+  position:relative;z-index:1;
+  width:420px;max-width:92%;
+  padding:38px;
+  border:1px solid rgba(160,170,255,.2);
+  border-radius:25px;
+  background:linear-gradient(145deg,rgba(23,29,49,.96),rgba(12,16,29,.96));
+  box-shadow:0 30px 100px #0008,0 0 70px #625bff10;
+  backdrop-filter:blur(24px);
+}
+.logo{
+  font-size:39px;font-weight:900;letter-spacing:-1.8px;
+  background:linear-gradient(100deg,#fff 10%,#9da8ff 55%,#62caff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.subtitle{color:#9ba6c2;line-height:1.6;margin:10px 0 27px}
+.authbox input,.modalBox input{
+  background:#090e1b;
+  border:1px solid #293149;
+  border-radius:12px;
+  padding:14px 15px;
+  color:#fff;
+}
+.authbox button{
+  padding:14px;border-radius:12px;
+  background:linear-gradient(110deg,#626fff,#8a65ff);
+  box-shadow:0 8px 25px #665dff2a;
+}
+.authbox button+button{
+  background:#1b2337;border:1px solid #303b57;box-shadow:none;
+}
+
+/* ANA YERLEŞİM */
+#app{background:transparent}
+.sidebar{
+  width:300px;
+  background:rgba(12,16,28,.94);
+  border-right:1px solid var(--line);
+  box-shadow:12px 0 50px #00012;
+  backdrop-filter:blur(20px);
+}
+.sideTop{padding:23px 19px 17px;border-bottom:1px solid var(--line)}
+.brand{
+  font-size:26px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(100deg,#fff,#9da7ff,#6bcfff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.me{
+  margin-top:20px;padding:13px;
+  border:1px solid #ffffff0d;border-radius:16px;
+  background:linear-gradient(120deg,#1a2138,#111827);
+}
+.avatar{
+  background:linear-gradient(135deg,#6975ff,#36b9ef);
+  box-shadow:0 4px 18px #6576ff20;
+  border:1px solid #ffffff17;
+}
+.meName{font-size:14px}
+.online{color:#53e5b0}
+.sideButtons{padding:12px 14px}
+.sideButtons button,.sideNav,.sideAction{
+  border:1px solid #ffffff0c;
+  border-radius:11px;
+  background:#171e30;
+  color:#dce4ff;
+  padding:11px 12px;
+}
+.sideButtons button:first-child{
+  background:linear-gradient(120deg,#5e6cff,#8065f5);
+  color:white;border:0;
+}
+.sideNav{
+  margin:5px 12px;
+  background:transparent;
+  border-color:transparent;
+  color:#aeb9d1;
+  padding:12px 14px;
+}
+.sideNav:hover,.listItem:hover{
+  background:#1b2340;
+  border-color:#ffffff0a;
+}
+#publicChatButton{background:#202747;color:#cbd2ff;border-color:#343e70}
+.sectionTitle{
+  padding:19px 18px 8px;
+  font-size:10px;font-weight:800;letter-spacing:1.5px;
+  color:#687693;
+}
+.list{padding:0 7px}
+.listItem{
+  border:1px solid transparent;
+  border-radius:11px;
+  margin:3px 0;padding:11px;
+  transition:background .18s;
+}
+.listName{font-size:13px}
+.listSub{color:#7785a3;font-size:11px}
+.logout{
+  margin:12px;border:1px solid #ff777715;
+  border-radius:11px;background:#291822;color:#ff91a5;
+}
+
+/* SOHBET ALANI */
+.chat{background:rgba(8,11,20,.55);min-width:0}
+.chatHeader{
+  min-height:78px;padding:15px 23px;
+  background:rgba(12,16,28,.84);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
+}
+.chatTitle{font-size:16px;font-weight:750;letter-spacing:-.25px}
+.chatSub{font-size:12px;color:#7f8ba8}
+.headerBtn{
+  background:#171e31;color:#cbd5ff;
+  border:1px solid #ffffff13;border-radius:10px;
+  padding:9px 13px;
+}
+.messages{
+  padding:25px clamp(14px,3vw,38px);
+  gap:15px;
+  background-image:radial-gradient(#8e9bff07 .7px,transparent .7px);
+  background-size:20px 20px;
+}
+.empty{color:#7f8aa6;line-height:1.8}
+.message{
+  max-width:min(75%,620px);
+  padding:13px 15px;
+  border-radius:5px 17px 17px 17px;
+  background:linear-gradient(145deg,#171f32,#131a29);
+  border:1px solid #ffffff0b;
+  box-shadow:0 7px 24px #00012;
+  line-height:1.6;
+}
+.message.mine{
+  background:linear-gradient(135deg,#525fe0,#6252c6);
+  border:1px solid #b6baff20;
+  border-radius:17px 5px 17px 17px;
+  box-shadow:0 8px 24px #5554db20;
+}
+.messageSenderRow{gap:9px;margin-bottom:8px}
+.messageAvatar{border:1px solid #ffffff20}
+.messageSender{font-size:11px;font-weight:750;color:#b7c3ff}
+.message.mine .messageSender{color:#e1e4ff}
+.messageText{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.messageTime{font-size:10px;color:#a5b0cb;margin-top:7px}
+.message img.attachment{
+  border:1px solid #ffffff1c;
+  box-shadow:0 8px 25px #0003;
+}
+.composer{
+  padding:16px 20px;
+  background:rgba(12,16,28,.95);
+  border-top:1px solid var(--line);
+  gap:10px;
+}
+.composer input[type=text]{
+  min-height:47px;
+  border:1px solid #293149;
+  background:#111727;
+  border-radius:14px;
+  padding:13px 16px;
+  color:#f4f6ff;
+}
+.composer button{
+  min-height:45px;border-radius:12px;
+}
+.composer button:not(.tool){
+  background:linear-gradient(110deg,#6471ff,#8a65ff);
+  box-shadow:0 6px 20px #6d63ff20;
+}
+.composer .tool{
+  background:#171f32;color:#bfcaff;
+  border:1px solid #ffffff0c;
+}
+.statusline{color:#74819f}
+
+/* MODALLAR */
+.modal{
+  background:rgba(3,5,12,.76);
+  backdrop-filter:blur(12px);
+}
+.modalBox{
+  background:linear-gradient(145deg,#171e30,#0e1320);
+  border:1px solid #ffffff17;
+  border-radius:21px;
+  padding:26px;
+  box-shadow:0 35px 110px #0009;
+}
+.modalBox h2{font-size:22px;letter-spacing:-.5px}
+.modalBox input{margin-bottom:12px}
+.modalButtons{gap:9px}
+.modalButtons button{
+  border:1px solid #ffffff0c;border-radius:11px;
+  background:linear-gradient(110deg,#626fff,#8264f5);
+  padding:12px;
+}
+.modalButtons button.cancel{background:#20283b;color:#c0c9df}
+.choice,.request{
+  background:#151d2d;border:1px solid #ffffff0a;
+  border-radius:12px;padding:13px;
+}
+.requestButtons button{border-radius:9px}
+.hint{color:#8895b2;line-height:1.7}
+.profilePreview{border:2px solid #7d84ff}
+.badge{background:#ff6686;color:#fff}
+.modBadge{
+  background:linear-gradient(110deg,#ffe08a,#ffae45);
+  color:#271604;padding:4px 8px;
+  font-size:9px;letter-spacing:.7px;
+  box-shadow:0 3px 12px #ffbc4b22;
+}
+.modPanelBox{width:580px}
+.modSection{
+  background:#101727;
+  border:1px solid #ffffff0e;
+  border-radius:14px;padding:15px;
+}
+.modSection h3{font-size:14px;color:#dce2ff}
+.modSection input,.modSection select{
+  background:#0a1020;border:1px solid #303b54;border-radius:10px;
+}
+.modAction{border-radius:10px}
+.modAction.secondary{background:linear-gradient(110deg,#586bff,#7661e9)}
+#back{background:#1a2235;border:1px solid #ffffff10;border-radius:10px;color:white}
+/* MOBİL UYUM */
+@media(max-width:750px){
+  .sidebar{width:100%;background:#0d1220}
+  .chatHeader{min-height:68px;padding:10px 12px}
+  .messages{padding:15px 12px}
+  .message{max-width:88%;padding:11px 12px}
+  .composer{padding:10px;gap:6px}
+  .composer input[type=text]{padding:11px;min-height:43px}
+  .composer button{min-height:42px}
+  .authbox{padding:28px 23px}
+  .modalBox{padding:20px;border-radius:18px}
+  .modRow{flex-wrap:wrap}
+</style>
 :root{color-scheme:dark;--bg:#0b0f14;--panel:#10161d;--panel2:#161e27;--line:#26303b;--blue:#2589ed;--muted:#8996a5;--green:#45d483}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff;height:100vh;overflow:hidden}
