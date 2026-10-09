@@ -134,6 +134,111 @@ button:active{transform:scale(.98)}
 .message img.attachment{border:1px solid #ffffff20}
 .fileLink{overflow-wrap:anywhere}
 @media(max-width:750px){.messages{padding:14px 10px}.composer{padding:9px}.authbox{padding:24px}}
+
+/* T-SHOLICK SIGNATURE REDESIGN — premium chat UI */
+:root{
+ --bg:#070912;--panel:#0c1120;--panel2:#131b30;--line:#273451;
+ --blue:#7c8cff;--muted:#98a6c4;--green:#4de0a0;--pink:#d66bff;
+ --glow:rgba(112,130,255,.22)
+}
+html{background:var(--bg)}
+body{
+ background:
+  radial-gradient(900px 520px at 8% -12%,rgba(70,92,210,.24),transparent 62%),
+  radial-gradient(700px 520px at 105% 105%,rgba(161,63,213,.17),transparent 58%),
+  linear-gradient(135deg,#070912,#0a1020 54%,#090b16);
+}
+button{font-weight:650;letter-spacing:.1px}
+.auth{position:relative;isolation:isolate;overflow:hidden;background:transparent}
+.auth:before,.auth:after{content:"";position:absolute;z-index:-1;border-radius:50%;filter:blur(2px);pointer-events:none}
+.auth:before{width:420px;height:420px;left:-120px;top:-150px;background:radial-gradient(circle,#596bff2c,transparent 68%)}
+.auth:after{width:500px;height:500px;right:-160px;bottom:-220px;background:radial-gradient(circle,#d05bff25,transparent 68%)}
+.authbox{
+ position:relative;width:420px;padding:38px 34px 32px;border-radius:28px;
+ background:linear-gradient(145deg,rgba(18,26,47,.96),rgba(10,14,27,.97));
+ border:1px solid rgba(151,166,255,.2);
+ box-shadow:0 35px 100px #0009,0 0 70px #5c6fff12,inset 0 1px #ffffff12;
+}
+.authbox:before{content:"";display:block;height:4px;position:absolute;top:-1px;left:18%;right:18%;border-radius:0 0 10px 10px;background:linear-gradient(90deg,transparent,#8e9cff,#d18aff,transparent)}
+.logo{font-size:39px;letter-spacing:-1.8px;text-shadow:0 0 34px #8390ff25;margin-bottom:10px}
+.subtitle{font-size:14px;line-height:1.6;color:#a8b4d0;margin-bottom:28px}
+.authbox input{height:49px;padding:0 15px;margin-bottom:13px;background:#080d19!important;border-color:#2b3653!important}
+.authbox input::placeholder,.composer input::placeholder{color:#7886a5}
+.authbox button{height:48px;border-radius:13px!important;font-size:14px}
+#register{margin-top:5px}
+#login{background:rgba(34,45,73,.78)!important;border:1px solid #34415f!important;box-shadow:none!important}
+.error{font-size:13px}
+#app{background:transparent}
+.sidebar{
+ width:304px;background:rgba(9,13,25,.86)!important;border-right:1px solid rgba(148,164,221,.13)!important;
+ box-shadow:14px 0 45px #00020;backdrop-filter:blur(24px)!important
+}
+.sideTop{padding:22px 18px 16px}
+.brand{font-size:27px;letter-spacing:-1.2px}
+.brand:before{content:"✦";display:inline-grid;place-items:center;width:29px;height:29px;margin-right:9px;border-radius:10px;color:#fff;background:linear-gradient(135deg,#7385ff,#c26aff);font-size:17px;vertical-align:2px;box-shadow:0 5px 20px #7c73ff40}
+.me{margin-top:20px;padding:12px;border-radius:16px;background:linear-gradient(120deg,#182440,#11192b);border:1px solid #a1b2ff16}
+.avatar{background:linear-gradient(135deg,#7184ff,#ba68f1 55%,#45c9db);box-shadow:0 5px 18px #0004}
+.me .avatar{width:44px;height:44px}
+.meName{font-size:14px}
+.online{font-size:11px;letter-spacing:.25px}
+.sideButtons{padding:12px 13px 8px;gap:9px}
+.sideButtons button{background:linear-gradient(135deg,#202d4b,#172238);border:1px solid #9aaaff18;padding:11px 8px}
+.sideNav{margin:5px 12px;padding:12px 13px;background:transparent;border:1px solid transparent;color:#b8c4df;border-radius:12px}
+#publicChatButton{background:linear-gradient(110deg,#2939687d,#34244e6e);border-color:#8995ff27;color:#fff}
+.sideNav:hover{background:#1b2740;border-color:#8d9bff20}
+.sectionTitle{padding:17px 17px 7px;font-size:10px;letter-spacing:1.6px;color:#7788ad}
+.list{padding:0 5px}
+.listItem{display:flex;flex-direction:column;gap:2px;padding:11px 12px;margin:3px 5px;border-radius:13px}
+.listItem:hover{background:linear-gradient(110deg,#1b2843,#171e34);border-color:#9aaaff17}
+.listName{font-size:13px}
+.listSub{font-size:11px}
+.logout{margin:10px 13px 14px;padding:12px;background:linear-gradient(100deg,#321d32,#251825);border:1px solid #f17fba1d}
+.chat{position:relative;background:linear-gradient(145deg,rgba(12,17,32,.48),rgba(8,11,21,.78))}
+.chatHeader{min-height:82px;padding:16px 24px;background:rgba(10,15,28,.68)!important;border-bottom:1px solid #a3b1e014!important;backdrop-filter:blur(22px)!important}
+.chatHeader .avatar{width:43px;height:43px}
+.chatTitle{font-size:16px;letter-spacing:-.2px}
+.chatSub{font-size:12px;color:#8e9dbd}
+.headerBtn{padding:9px 13px;background:#172139;border-color:#8999c51c}
+.messages{padding:26px clamp(14px,4vw,48px);gap:15px}
+.message{max-width:min(72%,650px);padding:12px 15px;border:1px solid #a4b6f012;background:linear-gradient(145deg,#18243c,#111a2d);box-shadow:0 10px 28px #00018}
+.message.mine{background:linear-gradient(125deg,#596df0,#8054d6);box-shadow:0 9px 28px #5b63df25}
+.messageText{font-size:14px;line-height:1.55;white-space:pre-wrap}
+.messageSender{letter-spacing:.15px;margin-bottom:6px}
+.messageTime{font-variant-numeric:tabular-nums;color:#c6d0e8}
+.message .badge{background:linear-gradient(100deg,#ffba67,#ff7199);color:#2a1320;font-weight:850;font-size:9px;letter-spacing:.5px;padding:3px 7px}
+.composer{padding:16px 22px 20px;background:rgba(9,13,25,.88)!important;border-top:1px solid #a3b1e014!important;backdrop-filter:blur(22px)!important}
+.composer input[type=text]{height:48px;background:#0c1222;border-color:#2b3653;border-radius:15px}
+.composer button{min-height:46px;border-radius:13px}
+.composer .tool{background:#172139;border-color:#ffffff0c}
+#send{padding-left:20px;padding-right:20px}
+.statusline{padding:0 24px 7px}
+.modal{background:rgba(2,4,12,.78)!important;backdrop-filter:blur(12px)}
+.modalBox{background:linear-gradient(145deg,#141d33,#0b1120)!important;border:1px solid #7e91d82b!important;border-radius:22px!important;box-shadow:0 28px 90px #000b!important;padding:28px}
+.modalBox h2{font-size:21px;letter-spacing:-.5px}
+.modalBox input{min-height:45px}
+.modalButtons button{border-radius:11px}
+.choice,.request{background:#121c30;border-color:#ffffff0b}
+.empty{font-size:14px;color:#8190b0}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#34415f;border-radius:20px}
+::-webkit-scrollbar-track{background:transparent}
+@media(max-width:750px){
+ .sidebar{width:100%;background:rgba(9,13,25,.97)!important}
+ .authbox{padding:32px 24px 26px}
+ .chatHeader{min-height:70px;padding:10px 12px}
+ .message{max-width:84%}
+ .messages{padding:16px 10px}
+ .composer{padding:10px}
+ .composer input[type=text]{padding:12px}
+ #send{padding-left:13px;padding-right:13px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .authbox{animation:authRise .65s cubic-bezier(.2,.8,.2,1) both}
+ .message{animation:messageIn .22s ease-out both}
+ @keyframes authRise{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+ @keyframes messageIn{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+}
+
 </style>
 </head>
 <body>
