@@ -2,99 +2,110 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>T-Sholick</title>
-
 <style>
+:root{color-scheme:dark;--bg:#0b0f14;--panel:#10161d;--panel2:#161e27;--line:#26303b;--blue:#2589ed;--muted:#8996a5;--green:#45d483}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#0b0f14;color:#fff;height:100vh;overflow:hidden}
-.hidden{display:none!important}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff;height:100vh;overflow:hidden}
 button{cursor:pointer}
-
-#auth{width:100%;height:100vh;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle at top,#172233,#0b0f14 60%)}
-.authbox{width:390px;max-width:92%;background:#111820;border:1px solid #273342;border-radius:20px;padding:35px;box-shadow:0 20px 70px #0008}
+button:disabled{opacity:.5;cursor:not-allowed}
+.hidden{display:none!important}
+input,button{font:inherit}
+.auth{height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#172233,#0b0f14 60%)}
+.authbox,.modalBox{background:#111820;border:1px solid #273342;border-radius:20px;padding:28px;box-shadow:0 20px 70px #0008}
+.authbox{width:390px;max-width:92%}
 .logo{text-align:center;font-size:34px;font-weight:800;margin-bottom:8px;color:#4da3ff}
-.subtitle{text-align:center;color:#8996a5;margin-bottom:28px}
-.authbox input,.modalBox input{width:100%;padding:14px;margin-bottom:12px;border-radius:10px;border:1px solid #2c3948;background:#0b1118;color:#fff;outline:none;font-size:15px}
-.authbox input:focus,.modalBox input:focus{border-color:#4da3ff}
-.authbox button{width:100%;padding:14px;margin-top:8px;border:0;border-radius:10px;background:#2589ed;color:white;font-size:15px;font-weight:bold}
-.authbox button:hover{background:#1878d8}
-#error{color:#ff6262;text-align:center;margin-top:15px;overflow-wrap:anywhere}
-
-#app{width:100%;height:100vh;display:flex}
-.sidebar{width:300px;flex-shrink:0;background:#10161d;border-right:1px solid #26303b;display:flex;flex-direction:column}
-.sideTop{padding:20px;border-bottom:1px solid #26303b}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:24px}
+.authbox input,.modalBox input{width:100%;padding:13px;margin-bottom:12px;border-radius:10px;border:1px solid #2c3948;background:#0b1118;color:#fff;outline:none}
+.authbox button{width:100%;padding:13px;margin-top:8px;border:0;border-radius:10px;background:var(--blue);color:white;font-weight:bold}
+.error{color:#ff6262;text-align:center;margin-top:12px;overflow-wrap:anywhere}
+#app{height:100vh;display:flex}
+.sidebar{width:290px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column}
+.sideTop{padding:18px;border-bottom:1px solid var(--line)}
 .brand{font-size:24px;font-weight:bold;color:#4da3ff}
-.me{margin-top:15px;padding:12px;background:#161e27;border-radius:12px}
+.me{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px;background:var(--panel2);border-radius:12px}
+.avatar{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:#2589ed;display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden}
+.avatar img,.profilePreview{width:100%;height:100%;object-fit:cover}
 .meName{font-weight:bold;overflow-wrap:anywhere}
-.online{color:#45d483;font-size:12px;margin-top:4px}
-.sideButtons{display:flex;gap:8px;padding:12px 15px}
-.sideButtons button{flex:1;padding:10px;border:0;border-radius:9px;background:#202b37;color:white}
-.sideButtons button:hover,.sideNav:hover{background:#2b3948}
-.sectionTitle{padding:10px 15px;color:#718092;font-size:12px;text-transform:uppercase}
-.sideNav{margin:7px 15px;padding:12px;border:0;border-radius:10px;background:#173452;color:#fff;text-align:left}
-.list{overflow-y:auto;flex:1;min-height:40px}
-.listItem{padding:13px 15px;cursor:pointer;border-bottom:1px solid #ffffff08;overflow-wrap:anywhere}
+.online{color:var(--green);font-size:12px;margin-top:4px}
+.sideButtons{display:flex;gap:8px;padding:10px 14px}
+.sideButtons button,.sideNav,.sideAction{border:0;border-radius:9px;background:#202b37;color:#fff;padding:10px}
+.sideButtons button{flex:1}
+.sideNav{margin:6px 14px;text-align:left;background:#173452}
+.sectionTitle{padding:10px 14px;color:#718092;font-size:12px;text-transform:uppercase}
+.list{overflow-y:auto;flex:1;min-height:30px}
+.listItem{padding:12px 14px;cursor:pointer;border-bottom:1px solid #ffffff08;overflow-wrap:anywhere}
 .listItem:hover{background:#18222d}
 .listName{font-weight:bold}
 .listSub{color:#8492a2;font-size:12px;margin-top:4px}
-.logout{margin:15px;padding:12px;border:0;border-radius:10px;background:#27181a;color:#ff6d6d}
-
+.dot{color:var(--green)}
+.logout{margin:12px;padding:12px;border:0;border-radius:10px;background:#27181a;color:#ff6d6d}
 .chat{flex:1;display:flex;flex-direction:column;min-width:0}
-.chatHeader{min-height:72px;padding:12px 18px;border-bottom:1px solid #26303b;display:flex;align-items:center;gap:12px;background:#10161d}
+.chatHeader{min-height:70px;padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:var(--panel)}
 #back{display:none;border:0;background:#202a35;color:#fff;border-radius:8px;padding:9px 12px}
-.chatAvatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;background:#2589ed;display:flex;justify-content:center;align-items:center;font-weight:bold}
 .chatTitle{font-weight:bold;overflow-wrap:anywhere}
 .chatSub{font-size:12px;color:#748293;margin-top:3px}
+.headerSpacer{flex:1}
+.headerBtn{border:1px solid #334253;background:#202b37;color:#fff;padding:8px 10px;border-radius:9px}
 .messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
 .empty{margin:auto;text-align:center;color:#6f7d8d;padding:20px}
-.message{max-width:75%;padding:10px 13px;border-radius:13px;background:#18222d;align-self:flex-start;overflow-wrap:anywhere}
+.message{max-width:75%;padding:10px 13px;border-radius:13px;background:#18222d;align-self:flex-start;overflow-wrap:anywhere;min-width:90px}
 .message.mine{background:#1677d2;align-self:flex-end}
 .messageSender{font-size:11px;color:#9aa7b5;margin-bottom:4px}
 .message.mine .messageSender{color:#d6eaff}
-.messageTime{font-size:10px;opacity:.65;margin-top:5px;text-align:right}
-.composer{display:flex;gap:10px;padding:15px;border-top:1px solid #26303b;background:#10161d}
-.composer input{flex:1;min-width:0;border:1px solid #2c3948;background:#0b1118;color:#fff;border-radius:10px;padding:13px;outline:none}
-.composer button{width:90px;border:0;border-radius:10px;background:#2589ed;color:white;font-weight:bold}
-.composer button:disabled,.composer input:disabled{opacity:.5;cursor:not-allowed}
-
+.messageTime{font-size:10px;opacity:.7;margin-top:5px;text-align:right}
+.message img.attachment{display:block;max-width:min(360px,100%);max-height:300px;border-radius:9px;margin-top:7px;object-fit:contain}
+.fileLink{display:inline-block;color:#fff;margin-top:6px}
+.composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--panel);align-items:center}
+.composer input[type=text]{flex:1;min-width:0;border:1px solid #2c3948;background:#0b1118;color:#fff;border-radius:10px;padding:12px;outline:none}
+.composer button{border:0;border-radius:10px;background:var(--blue);color:white;padding:12px 14px;font-weight:bold}
+.composer .tool{background:#202b37;padding:12px}
+.composer input[type=file]{display:none}
+.statusline{font-size:11px;color:var(--muted);padding:0 15px 8px}
 .modal{position:fixed;inset:0;background:#000b;display:flex;justify-content:center;align-items:center;z-index:10;padding:15px}
-.modalBox{width:420px;max-width:100%;max-height:85vh;overflow-y:auto;background:#111820;border:1px solid #2a3542;border-radius:17px;padding:25px}
-.modalBox h2{margin-bottom:18px}
-.modalButtons{display:flex;gap:10px}
-.modalButtons button{flex:1;padding:12px;border:0;border-radius:9px;background:#2589ed;color:white}
+.modalBox{width:440px;max-width:100%;max-height:85vh;overflow-y:auto}
+.modalBox h2{margin-bottom:16px}
+.modalButtons{display:flex;gap:10px;margin-top:10px}
+.modalButtons button{flex:1;padding:11px;border:0;border-radius:9px;background:var(--blue);color:white}
 .modalButtons button.cancel{background:#27313d}
 .choice,.request{padding:11px;background:#17212b;border-radius:8px;margin-bottom:8px;overflow-wrap:anywhere}
 .choice input{width:auto;margin:0 8px 0 0}
 .requestButtons{display:flex;gap:8px;margin-top:10px}
 .requestButtons button{flex:1;padding:9px;border:0;border-radius:7px}
-.accept{background:#2589ed;color:white}
+.accept{background:var(--blue);color:white}
 .reject{background:#2b2020;color:#ff7777}
-
+.emojiPanel{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.emojiPanel button{background:#202b37;border:0;border-radius:6px;padding:6px;font-size:20px}
+.hint{font-size:12px;line-height:1.5;color:var(--muted);margin:6px 0 12px}
+.profileRow{display:flex;align-items:center;gap:12px;margin:10px 0}
+.profilePreview{width:58px;height:58px;border-radius:50%;background:#2589ed}
+.badge{display:inline-block;background:#c73545;border-radius:20px;padding:2px 7px;font-size:11px;margin-left:5px}
 @media(max-width:750px){
- .sidebar{width:100%;border-right:0}
- .chat{display:none}
- #app.mobile-chat .sidebar{display:none}
- #app.mobile-chat .chat{display:flex}
- #back{display:block}
- .message{max-width:88%}
+.sidebar{width:100%;border-right:0}
+.chat{display:none}
+#app.mobile-chat .sidebar{display:none}
+#app.mobile-chat .chat{display:flex}
+#back{display:block}
+.message{max-width:88%}
+.chatHeader{padding:10px}
+.composer{gap:5px;padding:8px}
+.composer button{padding:11px 9px}
+.headerBtn{padding:7px}
 }
 </style>
 </head>
-
 <body>
 
-<div id="auth">
+<div id="auth" class="auth">
   <div class="authbox">
     <div class="logo">T-Sholick</div>
     <div class="subtitle">Sohbete katıl, arkadaşlarınla buluş</div>
-
-    <input id="username" type="text" placeholder="Kullanıcı adı" autocomplete="username" maxlength="30">
+    <input id="username" placeholder="Kullanıcı adı" autocomplete="username" maxlength="30">
     <input id="password" type="password" placeholder="Şifre" autocomplete="current-password">
-
     <button id="register">Hesap Oluştur</button>
     <button id="login">Giriş Yap</button>
-    <div id="error"></div>
+    <div id="error" class="error"></div>
   </div>
 </div>
 
@@ -103,13 +114,16 @@ button{cursor:pointer}
     <div class="sideTop">
       <div class="brand">T-Sholick</div>
       <div class="me">
-        <div id="me" class="meName">-</div>
-        <div class="online">● Çevrimiçi</div>
+        <div id="myAvatar" class="avatar">?</div>
+        <div style="min-width:0;flex:1">
+          <div id="me" class="meName">-</div>
+          <div class="online">● Çevrimiçi</div>
+        </div>
+        <button id="profileButton" class="headerBtn" title="Profili düzenle">✎</button>
       </div>
     </div>
 
-    <button id="publicChatButton" class="sideNav">🌐 Genel Sohbet</button>
-
+    <button id="publicChatButton" class="sideNav">🌐 Genel Sohbet <span id="globalBadge"></span></button>
     <div class="sideButtons">
       <button id="addFriend">+ Arkadaş</button>
       <button id="createGroup">+ Grup</button>
@@ -119,27 +133,34 @@ button{cursor:pointer}
     <div id="friends" class="list"></div>
 
     <div class="sectionTitle">Gruplar</div>
-    <div id="groups" class="list" style="flex:none;max-height:150px"></div>
+    <div id="groups" class="list" style="flex:none;max-height:130px"></div>
 
-    <button id="requestsButton" class="sideNav">✉ Arkadaşlık İstekleri</button>
+    <button id="requestsButton" class="sideNav">✉ İstekler <span id="requestBadge"></span></button>
+    <button id="notificationsButton" class="sideNav">🔔 Bildirimleri Aç</button>
     <button id="logout" class="logout">Çıkış Yap</button>
   </aside>
 
   <main class="chat">
     <div class="chatHeader">
       <button id="back">←</button>
-      <div id="chatAvatar" class="chatAvatar">?</div>
-      <div>
+      <div id="chatAvatar" class="avatar">?</div>
+      <div style="min-width:0">
         <div id="chatTitle" class="chatTitle">Sohbet seç</div>
         <div id="chatSub" class="chatSub">Bir arkadaş, grup veya genel sohbet seç</div>
       </div>
+      <div class="headerSpacer"></div>
+      <button id="profileHeaderButton" class="headerBtn">Profil</button>
     </div>
 
     <div id="messages" class="messages">
       <div class="empty">Bir sohbet seçerek başlayabilirsin.</div>
     </div>
 
+    <div id="typingStatus" class="statusline"></div>
     <div class="composer">
+      <button id="emojiButton" class="tool" title="Emoji">😊</button>
+      <button id="fileButton" class="tool" title="Fotoğraf/dosya">＋</button>
+      <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx,.zip">
       <input id="message" type="text" placeholder="Mesaj yaz..." maxlength="2000" disabled>
       <button id="send" disabled>Gönder</button>
     </div>
@@ -179,13 +200,44 @@ button{cursor:pointer}
   </div>
 </div>
 
+<div id="profileModal" class="modal hidden">
+  <div class="modalBox">
+    <h2>Profilini Düzenle</h2>
+    <div class="profileRow">
+      <div id="profilePreview" class="profilePreview"></div>
+      <div>
+        <label for="avatarFile">Profil fotoğrafı (en fazla 5 MB)</label>
+        <input id="avatarFile" type="file" accept="image/*" style="margin-top:8px">
+      </div>
+    </div>
+    <input id="displayName" placeholder="Görünen ad (isteğe bağlı)" maxlength="30">
+    <div class="hint">Sohbet fotoğrafları en fazla 25 MB olabilir. Dosyalar Firebase Storage'da saklanır.</div>
+    <div class="modalButtons">
+      <button id="saveProfile">Kaydet</button>
+      <button class="cancel" data-close="profileModal">İptal</button>
+    </div>
+  </div>
+</div>
+
+<div id="emojiModal" class="modal hidden">
+  <div class="modalBox">
+    <h2>Emoji seç</h2>
+    <div id="emojiPanel" class="emojiPanel"></div>
+    <div class="modalButtons">
+      <button class="cancel" data-close="emojiModal">Kapat</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
 import {
-  getDatabase, ref, set, get, push, onValue, update, remove
+  getDatabase, ref, set, get, push, onValue, update, remove, onDisconnect
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
 
-/* FIREBASE BAĞLANTISI */
 const firebaseConfig = {
   apiKey: "AIzaSyDW_5z_vOGLdXY2vZ1BtSegVXXSud6Mqo8",
   authDomain: "t-sholick.firebaseapp.com",
@@ -197,9 +249,9 @@ const firebaseConfig = {
   measurementId: "G-X9Y2GWSJHG"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getDatabase(firebaseApp);
-
+const appFirebase = initializeApp(firebaseConfig);
+const db = getDatabase(appFirebase);
+const storage = getStorage(appFirebase);
 const $ = id => document.getElementById(id);
 
 let meUser = null;
@@ -210,214 +262,241 @@ let currentChat = null;
 let messageListener = null;
 let listenerStops = [];
 let sending = false;
+let avatarData = null;
+let unread = {};
 
-function showError(message) {
-  $("error").textContent = message;
+function usernameKey(s) {
+  return s.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_").replace(/_+/g, "_");
 }
 
-function usernameKey(username) {
-  return username.trim().toLowerCase()
-    .replace(/[^a-z0-9_-]/g, "_")
-    .replace(/_+/g, "_");
-}
-
-function escapeHTML(value) {
-  const div = document.createElement("div");
-  div.textContent = String(value ?? "");
-  return div.innerHTML;
-}
-
-async function hashPassword(password) {
-  const bytes = new TextEncoder().encode(password);
-  const hash = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(hash))
-    .map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-function addListenerStop(stop) {
-  listenerStops.push(stop);
+function showError(s) {
+  $("error").textContent = s;
 }
 
 function stopAllListeners() {
-  listenerStops.forEach(stop => stop());
+  listenerStops.forEach(f => f());
   listenerStops = [];
   messageListener = null;
 }
 
-function handleError(prefix, error) {
-  console.error(prefix, error);
-  alert(prefix + ": " + (error?.message || "Bilinmeyen hata"));
+function addStop(f) {
+  listenerStops.push(f);
 }
 
-/* KAYIT */
-$("register").addEventListener("click", async () => {
+function handleError(prefix, e) {
+  console.error(prefix, e);
+  alert(prefix + ": " + (e?.message || "Bilinmeyen hata"));
+}
+
+async function hashPassword(s) {
+  const b = new TextEncoder().encode(s);
+  const h = await crypto.subtle.digest("SHA-256", b);
+  return Array.from(new Uint8Array(h)).map(x => x.toString(16).padStart(2, "0")).join("");
+}
+
+function showAvatar(el, user) {
+  el.replaceChildren();
+  if (user?.avatar) {
+    const img = document.createElement("img");
+    img.src = user.avatar;
+    img.alt = "";
+    el.appendChild(img);
+  } else {
+    el.textContent = (user?.displayName || user?.username || "?").charAt(0).toUpperCase();
+  }
+}
+
+function displayName(user) {
+  return user?.displayName || user?.username || "Kullanıcı";
+}
+
+async function setOnline() {
+  if (!meUser) return;
+  const statusRef = ref(db, `users/${meUser.usernameKey}/online`);
+  await onDisconnect(statusRef).set(false);
+  await set(statusRef, true);
+}
+
+$("register").onclick = async () => {
   try {
     showError("");
     const username = $("username").value.trim();
     const password = $("password").value;
 
     if (!/^[a-zA-Z0-9_-]{3,30}$/.test(username)) {
-      showError("Kullanıcı adı 3-30 karakter olmalı; harf, sayı, _ ve - kullan.");
-      return;
+      return showError("Kullanıcı adı 3-30 karakter olmalı; harf, sayı, _ ve - kullan.");
     }
     if (password.length < 6) {
-      showError("Şifre en az 6 karakter olmalı.");
-      return;
+      return showError("Şifre en az 6 karakter olmalı.");
     }
 
     const key = usernameKey(username);
-    const userRef = ref(db, `users/${key}`);
-    const snapshot = await get(userRef);
+    const ur = ref(db, `users/${key}`);
+    const snap = await get(ur);
 
-    if (snapshot.exists()) {
-      showError("Bu kullanıcı adı zaten kullanılıyor.");
-      return;
-    }
+    if (snap.exists()) return showError("Bu kullanıcı adı zaten kullanılıyor.");
 
-    await set(userRef, {
+    await set(ur, {
       username,
       passwordHash: await hashPassword(password),
       createdAt: Date.now(),
-      online: true
+      online: true,
+      displayName: username
     });
 
     meUser = { username, usernameKey: key };
     localStorage.setItem("tsholick_user", JSON.stringify(meUser));
+    await setOnline();
     openApp();
-  } catch (error) {
-    showError("Hesap oluşturulamadı: " + error.message);
+  } catch (e) {
+    showError("Hesap oluşturulamadı: " + e.message);
   }
-});
+};
 
-/* GİRİŞ */
-$("login").addEventListener("click", async () => {
+$("login").onclick = async () => {
   try {
     showError("");
     const username = $("username").value.trim();
     const password = $("password").value;
 
-    if (!username || !password) {
-      showError("Kullanıcı adı ve şifre gir.");
-      return;
-    }
+    if (!username || !password) return showError("Kullanıcı adı ve şifre gir.");
 
     const key = usernameKey(username);
-    const snapshot = await get(ref(db, `users/${key}`));
+    const snap = await get(ref(db, `users/${key}`));
 
-    if (!snapshot.exists()) {
-      showError("Kullanıcı bulunamadı.");
-      return;
+    if (!snap.exists()) return showError("Kullanıcı bulunamadı.");
+
+    const u = snap.val();
+    if (u.passwordHash !== await hashPassword(password)) {
+      return showError("Şifre yanlış.");
     }
 
-    const user = snapshot.val();
-    if (user.passwordHash !== await hashPassword(password)) {
-      showError("Şifre yanlış.");
-      return;
-    }
-
-    await update(ref(db, `users/${key}`), {
-      online: true,
-      lastLogin: Date.now()
-    });
-
-    meUser = { username: user.username, usernameKey: key };
+    meUser = { username: u.username, usernameKey: key };
     localStorage.setItem("tsholick_user", JSON.stringify(meUser));
+    await update(ref(db, `users/${key}`), { online: true, lastLogin: Date.now() });
+    await setOnline();
     openApp();
-  } catch (error) {
-    showError("Giriş yapılamadı: " + error.message);
+  } catch (e) {
+    showError("Giriş yapılamadı: " + e.message);
   }
-});
-
-/* UYGULAMAYI AÇ */
-function openApp() {
-  stopAllListeners();
-  $("auth").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("me").textContent = meUser.username;
-
-  loadUsers();
-  loadMe();
-  loadFriends();
-  loadGroups();
-  loadRequests();
-}
+};
 
 async function checkSession() {
   const saved = localStorage.getItem("tsholick_user");
   if (!saved) return;
 
   try {
-    const session = JSON.parse(saved);
-    const snapshot = await get(ref(db, `users/${session.usernameKey}`));
+    const s = JSON.parse(saved);
+    const snap = await get(ref(db, `users/${s.usernameKey}`));
 
-    if (!snapshot.exists()) {
+    if (!snap.exists()) {
       localStorage.removeItem("tsholick_user");
       return;
     }
 
-    const user = snapshot.val();
-    meUser = {
-      username: user.username,
-      usernameKey: session.usernameKey
-    };
-
-    await update(ref(db, `users/${meUser.usernameKey}`), { online: true });
+    const u = snap.val();
+    meUser = { username: u.username, usernameKey: s.usernameKey };
+    await setOnline();
     openApp();
-  } catch (error) {
-    console.error("Oturum kontrolü:", error);
+  } catch (e) {
+    console.error("Oturum kontrolü:", e);
   }
 }
 
-/* PROFİL VE KULLANICILAR */
-function loadMe() {
-  addListenerStop(onValue(
-    ref(db, `users/${meUser.usernameKey}`),
-    snapshot => {
-      if (snapshot.exists()) $("me").textContent = snapshot.val().username;
-    }
-  ));
+function openApp() {
+  stopAllListeners();
+  $("auth").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("me").textContent = meUser.username;
+  loadUsers();
+  loadMe();
+  loadFriends();
+  loadGroups();
+  loadRequests();
+  listenUnread();
 }
 
-function loadUsers() {
-  addListenerStop(onValue(ref(db, "users"), snapshot => {
-    users = snapshot.val() || {};
-    renderFriends();
-    renderGroupChoices();
+function loadMe() {
+  addStop(onValue(ref(db, `users/${meUser.usernameKey}`), s => {
+    if (!s.exists()) return;
+    const u = s.val();
+    $("me").textContent = displayName(u);
+    showAvatar($("myAvatar"), u);
   }));
 }
 
-/* ARKADAŞLAR */
-function loadFriends() {
-  addListenerStop(onValue(
-    ref(db, `friends/${meUser.usernameKey}`),
-    snapshot => {
-      friends = snapshot.val() || {};
-      renderFriends();
-      renderGroupChoices();
+function loadUsers() {
+  addStop(onValue(ref(db, "users"), s => {
+    users = s.val() || {};
+    renderFriends();
+    renderGroupChoices();
+
+    if (currentChat?.type === "private") {
+      const u = users[currentChat.otherKey];
+      if (u) {
+        $("chatSub").textContent = u.online ? "● Çevrimiçi" : "Çevrimdışı";
+        showAvatar($("chatAvatar"), u);
+      }
     }
-  ));
+  }));
+}
+
+function loadFriends() {
+  addStop(onValue(ref(db, `friends/${meUser.usernameKey}`), s => {
+    friends = s.val() || {};
+    renderFriends();
+    renderGroupChoices();
+  }));
 }
 
 function renderFriends() {
   const box = $("friends");
   box.replaceChildren();
 
-  const keys = Object.keys(friends).filter(key => users[key]);
+  const keys = Object.keys(friends).filter(k => users[k]);
 
   if (!keys.length) {
     box.innerHTML = '<div class="listItem"><div class="listSub">Henüz arkadaşın yok.</div></div>';
     return;
   }
 
-  keys.forEach(key => {
-    const user = users[key];
+  keys.forEach(k => {
+    const u = users[k];
     const item = document.createElement("div");
     item.className = "listItem";
-    item.innerHTML = `
-      <div class="listName">${escapeHTML(user.username)}</div>
-      <div class="listSub">${user.online ? "● Çevrimiçi" : "Çevrimdışı"}</div>
-    `;
-    item.onclick = () => openPrivate(key, user);
+
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;align-items:center;gap:9px";
+
+    const av = document.createElement("div");
+    av.className = "avatar";
+    av.style.cssText = "width:32px;height:32px";
+    showAvatar(av, u);
+
+    const info = document.createElement("div");
+    info.style.minWidth = "0";
+
+    const name = document.createElement("div");
+    name.className = "listName";
+    name.textContent = displayName(u);
+
+    const sub = document.createElement("div");
+    sub.className = "listSub";
+    sub.textContent = u.online ? "● Çevrimiçi" : "Çevrimdışı";
+
+    row.append(av, info);
+    info.append(name, sub);
+    item.appendChild(row);
+
+    const count = unread[`private_${k}`] || 0;
+    if (count) {
+      const b = document.createElement("span");
+      b.className = "badge";
+      b.textContent = count;
+      name.appendChild(b);
+    }
+
+    item.onclick = () => openPrivate(k, u);
     box.appendChild(item);
   });
 }
@@ -430,22 +509,20 @@ $("addFriend").onclick = () => {
 $("sendRequest").onclick = async () => {
   try {
     const name = $("friendUsername").value.trim();
-    if (!name) return alert("Kullanıcı adı gir.");
 
     if (!/^[a-zA-Z0-9_-]{3,30}$/.test(name)) {
       return alert("Geçerli bir kullanıcı adı gir.");
     }
 
-    const targetKey = usernameKey(name);
-    if (targetKey === meUser.usernameKey) {
-      return alert("Kendine istek gönderemezsin.");
-    }
+    const k = usernameKey(name);
 
-    const target = await get(ref(db, `users/${targetKey}`));
-    if (!target.exists()) return alert("Bu kullanıcı bulunamadı.");
-    if (friends[targetKey]) return alert("Bu kişi zaten arkadaşın.");
+    if (k === meUser.usernameKey) return alert("Kendine istek gönderemezsin.");
 
-    await set(ref(db, `friendRequests/${targetKey}/${meUser.usernameKey}`), {
+    const s = await get(ref(db, `users/${k}`));
+    if (!s.exists()) return alert("Bu kullanıcı bulunamadı.");
+    if (friends[k]) return alert("Bu kişi zaten arkadaşın.");
+
+    await set(ref(db, `friendRequests/${k}/${meUser.usernameKey}`), {
       from: meUser.usernameKey,
       username: meUser.username,
       createdAt: Date.now()
@@ -453,17 +530,18 @@ $("sendRequest").onclick = async () => {
 
     alert("Arkadaşlık isteği gönderildi.");
     closeModal("friendModal");
-  } catch (error) {
-    handleError("İstek gönderilemedi", error);
+  } catch (e) {
+    handleError("İstek gönderilemedi", e);
   }
 };
 
-/* ARKADAŞLIK İSTEKLERİ */
 function loadRequests() {
-  addListenerStop(onValue(
-    ref(db, `friendRequests/${meUser.usernameKey}`),
-    snapshot => renderRequests(snapshot.val() || {})
-  ));
+  addStop(onValue(ref(db, `friendRequests/${meUser.usernameKey}`), s => {
+    const data = s.val() || {};
+    renderRequests(data);
+    const n = Object.keys(data).length;
+    $("requestBadge").textContent = n ? `(${n})` : "";
+  }));
 }
 
 function renderRequests(data) {
@@ -471,104 +549,106 @@ function renderRequests(data) {
   box.replaceChildren();
 
   const keys = Object.keys(data);
+
   if (!keys.length) {
     box.innerHTML = '<div class="empty">Bekleyen arkadaşlık isteği yok.</div>';
     return;
   }
 
-  keys.forEach(key => {
-    const request = data[key];
-    const div = document.createElement("div");
-    div.className = "request";
-    div.innerHTML = `
-      <b>${escapeHTML(request.username || key)}</b>
-      <div class="listSub">Sana arkadaşlık isteği gönderdi.</div>
-      <div class="requestButtons">
-        <button class="accept">Kabul Et</button>
-        <button class="reject">Reddet</button>
-      </div>
-    `;
-    div.querySelector(".accept").onclick = () => acceptRequest(key);
-    div.querySelector(".reject").onclick = () => rejectRequest(key);
-    box.appendChild(div);
+  keys.forEach(k => {
+    const r = data[k];
+    const d = document.createElement("div");
+    d.className = "request";
+
+    const b = document.createElement("b");
+    b.textContent = r.username || k;
+
+    const sub = document.createElement("div");
+    sub.className = "listSub";
+    sub.textContent = "Sana arkadaşlık isteği gönderdi.";
+
+    const buttons = document.createElement("div");
+    buttons.className = "requestButtons";
+
+    const a = document.createElement("button");
+    a.className = "accept";
+    a.textContent = "Kabul Et";
+    a.onclick = () => acceptRequest(k);
+
+    const x = document.createElement("button");
+    x.className = "reject";
+    x.textContent = "Reddet";
+    x.onclick = () => rejectRequest(k);
+
+    buttons.append(a, x);
+    d.append(b, sub, buttons);
+    box.appendChild(d);
   });
 }
 
-async function acceptRequest(otherKey) {
+async function acceptRequest(k) {
   try {
-    const snapshot = await get(ref(db, `friendRequests/${meUser.usernameKey}/${otherKey}`));
-    if (!snapshot.exists()) return;
+    const s = await get(ref(db, `friendRequests/${meUser.usernameKey}/${k}`));
+    if (!s.exists()) return;
 
     await update(ref(db), {
-      [`friends/${meUser.usernameKey}/${otherKey}`]: true,
-      [`friends/${otherKey}/${meUser.usernameKey}`]: true
+      [`friends/${meUser.usernameKey}/${k}`]: true,
+      [`friends/${k}/${meUser.usernameKey}`]: true
     });
 
-    await remove(ref(db, `friendRequests/${meUser.usernameKey}/${otherKey}`));
-  } catch (error) {
-    handleError("İstek kabul edilemedi", error);
+    await remove(ref(db, `friendRequests/${meUser.usernameKey}/${k}`));
+  } catch (e) {
+    handleError("İstek kabul edilemedi", e);
   }
 }
 
-async function rejectRequest(otherKey) {
+async function rejectRequest(k) {
   try {
-    await remove(ref(db, `friendRequests/${meUser.usernameKey}/${otherKey}`));
-  } catch (error) {
-    handleError("İstek silinemedi", error);
+    await remove(ref(db, `friendRequests/${meUser.usernameKey}/${k}`));
+  } catch (e) {
+    handleError("İstek silinemedi", e);
   }
 }
 
-$("requestsButton").onclick = () => {
-  $("requestsModal").classList.remove("hidden");
-};
-
-/* SOHBET AÇMA */
-function setChatHeader(title, subtitle, avatar) {
-  $("chatTitle").textContent = title;
-  $("chatSub").textContent = subtitle;
-  $("chatAvatar").textContent = avatar;
-  $("message").disabled = false;
-  $("send").disabled = false;
-  $("app").classList.add("mobile-chat");
-}
+$("requestsButton").onclick = () => $("requestsModal").classList.remove("hidden");
 
 function privateId(a, b) {
   return [a, b].sort().join("_");
 }
 
-function openPrivate(userKey, user) {
-  currentChat = {
-    type: "private",
-    id: privateId(meUser.usernameKey, userKey),
-    title: user.username
-  };
-
-  setChatHeader(
-    user.username,
-    user.online ? "Çevrimiçi" : "Çevrimdışı",
-    user.username.charAt(0).toUpperCase()
-  );
-  listenMessages();
+function setChatHeader(title, subtitle, user) {
+  $("chatTitle").textContent = title;
+  $("chatSub").textContent = subtitle;
+  showAvatar($("chatAvatar"), user || { username: title });
+  $("message").disabled = false;
+  $("send").disabled = false;
+  $("app").classList.add("mobile-chat");
 }
 
-/* GENEL SOHBET */
+function openPrivate(k, u) {
+  currentChat = {
+    type: "private",
+    id: privateId(meUser.usernameKey, k),
+    title: displayName(u),
+    otherKey: k
+  };
+  setChatHeader(displayName(u), u.online ? "● Çevrimiçi" : "Çevrimdışı", u);
+  listenMessages();
+  markRead();
+}
+
 $("publicChatButton").onclick = openPublicChat;
 
 function openPublicChat() {
-  currentChat = {
-    type: "public",
-    id: "global",
-    title: "Genel Sohbet"
-  };
-
-  setChatHeader("🌐 Genel Sohbet", "Tüm kullanıcılarla sohbet et", "🌐");
+  currentChat = { type: "public", id: "global", title: "Genel Sohbet" };
+  setChatHeader("🌐 Genel Sohbet", "Tüm kullanıcılarla sohbet et", { username: "🌐" });
   listenMessages();
+  markRead();
 }
 
-/* GRUPLAR */
 function loadGroups() {
-  addListenerStop(onValue(ref(db, "groups"), snapshot => {
-    groups = snapshot.val() || {};
+  addStop(onValue(ref(db, "groups"), s => {
+    groups = s.val() || {};
     renderGroups();
   }));
 }
@@ -577,40 +657,47 @@ function renderGroups() {
   const box = $("groups");
   box.replaceChildren();
 
-  Object.entries(groups).forEach(([id, group]) => {
-    if (!group.members?.[meUser.usernameKey]) return;
+  Object.entries(groups).forEach(([id, g]) => {
+    if (!g.members?.[meUser.usernameKey]) return;
 
-    const item = document.createElement("div");
-    item.className = "listItem";
-    item.innerHTML = `
-      <div class="listName">${escapeHTML(group.name)}</div>
-      <div class="listSub">Grup sohbeti</div>
-    `;
-    item.onclick = () => openGroup(id, group);
-    box.appendChild(item);
+    const d = document.createElement("div");
+    d.className = "listItem";
+
+    const n = document.createElement("div");
+    n.className = "listName";
+    n.textContent = g.name;
+
+    const sub = document.createElement("div");
+    sub.className = "listSub";
+    sub.textContent = "Grup sohbeti";
+
+    d.append(n, sub);
+    d.onclick = () => openGroup(id, g);
+    box.appendChild(d);
   });
 }
 
 function renderGroupChoices() {
   const box = $("friendChoices");
   if (!box) return;
+
   box.replaceChildren();
 
-  Object.keys(friends).forEach(key => {
-    const user = users[key];
-    if (!user) return;
+  Object.keys(friends).forEach(k => {
+    const u = users[k];
+    if (!u) return;
 
-    const div = document.createElement("div");
-    div.className = "choice";
+    const d = document.createElement("div");
+    d.className = "choice";
 
-    const label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.value = key;
+    const l = document.createElement("label");
+    const c = document.createElement("input");
+    c.type = "checkbox";
+    c.value = k;
 
-    label.append(checkbox, document.createTextNode(" " + user.username));
-    div.appendChild(label);
-    box.appendChild(div);
+    l.append(c, document.createTextNode(" " + displayName(u)));
+    d.appendChild(l);
+    box.appendChild(d);
   });
 }
 
@@ -627,13 +714,13 @@ $("makeGroup").onclick = async () => {
 
     const selected = Array.from(
       document.querySelectorAll("#friendChoices input:checked")
-    ).map(input => input.value);
+    ).map(x => x.value);
 
     const members = { [meUser.usernameKey]: true };
-    selected.forEach(key => { members[key] = true; });
+    selected.forEach(k => members[k] = true);
 
-    const groupRef = push(ref(db, "groups"));
-    await set(groupRef, {
+    const gr = push(ref(db, "groups"));
+    await set(gr, {
       name,
       owner: meUser.usernameKey,
       members,
@@ -641,35 +728,27 @@ $("makeGroup").onclick = async () => {
     });
 
     closeModal("groupModal");
-    openGroup(groupRef.key, { name, members });
-  } catch (error) {
-    handleError("Grup oluşturulamadı", error);
+    openGroup(gr.key, { name, members });
+  } catch (e) {
+    handleError("Grup oluşturulamadı", e);
   }
 };
 
-function openGroup(groupId, group) {
-  currentChat = {
-    type: "group",
-    id: groupId,
-    title: group.name
-  };
+function openGroup(id, g) {
+  if (!g.members?.[meUser.usernameKey]) {
+    return alert("Bu gruba erişimin yok.");
+  }
 
-  setChatHeader(group.name, "Grup sohbeti", group.name.charAt(0).toUpperCase());
+  currentChat = { type: "group", id, title: g.name };
+  setChatHeader(g.name, "Grup sohbeti", { username: g.name });
   listenMessages();
+  markRead();
 }
 
-/* MESAJLAR */
 function getMessagesRef() {
   if (!currentChat) return null;
-
-  if (currentChat.type === "private") {
-    return ref(db, `chats/${currentChat.id}/messages`);
-  }
-
-  if (currentChat.type === "public") {
-    return ref(db, "publicChat/messages");
-  }
-
+  if (currentChat.type === "private") return ref(db, `chats/${currentChat.id}/messages`);
+  if (currentChat.type === "public") return ref(db, "publicChat/messages");
   return ref(db, `groups/${currentChat.id}/messages`);
 }
 
@@ -681,138 +760,18 @@ function listenMessages() {
 
   $("messages").innerHTML = '<div class="empty">Mesajlar yükleniyor...</div>';
 
-  messageListener = onValue(getMessagesRef(), snapshot => {
-    renderMessages(snapshot.val() || {});
-  }, error => {
-    console.error("Mesajlar okunamadı:", error);
-    $("messages").innerHTML = '<div class="empty">Mesajlar yüklenemedi. Veritabanı kurallarını kontrol et.</div>';
-  });
+  messageListener = onValue(
+    getMessagesRef(),
+    s => renderMessages(s.val() || {}),
+    e => {
+      $("messages").innerHTML = '<div class="empty">Mesajlar yüklenemedi. Veritabanı kurallarını kontrol et.</div>';
+      console.error(e);
+    }
+  );
 }
 
 function renderMessages(data) {
   const box = $("messages");
   box.replaceChildren();
 
-  const entries = Object.entries(data).sort(
-    (a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0)
-  );
-
-  if (!entries.length) {
-    box.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen gönder!</div>';
-    return;
-  }
-
-  entries.forEach(([, msg]) => {
-    const mine = msg.senderId === meUser.usernameKey;
-    const div = document.createElement("div");
-    div.className = "message" + (mine ? " mine" : "");
-
-    const sender = document.createElement("div");
-    sender.className = "messageSender";
-    sender.textContent = mine ? "Sen" : (msg.senderName || "Kullanıcı");
-
-    const text = document.createElement("div");
-    text.className = "messageText";
-    text.textContent = msg.text || "";
-
-    const time = document.createElement("div");
-    time.className = "messageTime";
-    time.textContent = msg.createdAt
-      ? new Date(msg.createdAt).toLocaleTimeString("tr-TR", {
-          hour: "2-digit", minute: "2-digit"
-        })
-      : "";
-
-    div.append(sender, text, time);
-    box.appendChild(div);
-  });
-
-  box.scrollTop = box.scrollHeight;
-}
-
-/* MESAJ GÖNDER */
-async function sendMessage() {
-  if (sending || !currentChat) return;
-
-  const input = $("message");
-  const text = input.value.trim();
-  if (!text) return;
-
-  sending = true;
-  $("send").disabled = true;
-
-  try {
-    const messagesRef = getMessagesRef();
-    const newMessage = push(messagesRef);
-
-    await set(newMessage, {
-      senderId: meUser.usernameKey,
-      senderName: meUser.username,
-      text,
-      createdAt: Date.now()
-    });
-
-    input.value = "";
-  } catch (error) {
-    handleError("Mesaj gönderilemedi", error);
-  } finally {
-    sending = false;
-    $("send").disabled = !currentChat;
-  }
-}
-
-$("send").onclick = sendMessage;
-$("message").addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-/* GERİ */
-$("back").onclick = () => {
-  $("app").classList.remove("mobile-chat");
-
-  if (messageListener) {
-    messageListener();
-    messageListener = null;
-  }
-
-  currentChat = null;
-  $("message").disabled = true;
-  $("send").disabled = true;
-  $("chatTitle").textContent = "Sohbet seç";
-  $("chatSub").textContent = "Bir arkadaş, grup veya genel sohbet seç";
-  $("chatAvatar").textContent = "?";
-  $("messages").innerHTML = '<div class="empty">Bir sohbet seçerek başlayabilirsin.</div>';
-};
-
-/* ÇIKIŞ */
-$("logout").onclick = async () => {
-  try {
-    if (meUser) {
-      await update(ref(db, `users/${meUser.usernameKey}`), { online: false });
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  stopAllListeners();
-  localStorage.removeItem("tsholick_user");
-  location.reload();
-};
-
-/* MODALLAR */
-function closeModal(id) {
-  $(id).classList.add("hidden");
-}
-
-document.querySelectorAll("[data-close]").forEach(button => {
-  button.addEventListener("click", () => closeModal(button.dataset.close));
-});
-
-checkSession();
-</script>
-
-</body>
-</html>
+  const entries = Object.entries(data
