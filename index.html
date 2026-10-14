@@ -723,6 +723,44 @@ button:focus-visible,input:focus-visible{outline:2px solid #91a0ff;outline-offse
 .messageSender .badge{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;white-space:nowrap!important;line-height:1;padding:4px 7px!important;font-size:9px!important;letter-spacing:.25px;border-radius:999px!important;margin:0!important}
 
 </style>
+
+<style id="tsholick-dark-background-fix">
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141a30;--panel2:#1b2140;--line:#2b3354;--blue:#7568ee;--muted:#9ba6c8;--green:#36d6a0;--pink:#ee79b8}
+html,body{background:#0b1020!important;color:#eef0ff!important}
+body{background:radial-gradient(ellipse at 10% 0,#201c49 0,transparent 42%),radial-gradient(ellipse at 95% 100%,#142d43 0,transparent 38%),#0b1020!important;color:#eef0ff!important}
+#app{background:transparent!important}
+.sidebar{background:rgba(17,23,43,.97)!important;border-color:#ffffff12!important;box-shadow:0 12px 45px #0003!important}
+.sideTop{border-color:#ffffff12!important}
+.me{background:linear-gradient(135deg,#202044,#191c36)!important;border-color:#ffffff12!important;color:#f1f2ff!important}
+.headerBtn,.sideButtons button{background:#1c2340!important;border-color:#ffffff16!important;color:#e5e7ff!important}
+.sideNav{background:#28234c!important;border-color:#51478a!important;color:#d8d2ff!important}
+.sideNav:hover,.sideButtons button:hover{background:#332d60!important}
+.listItem{color:#e5e8ff!important}
+.listItem:hover{background:#ffffff09!important;border-color:#ffffff12!important}
+.listName{color:#e9ebff!important}.listSub,.sectionTitle{color:#929dbf!important}
+.logout{background:#351d35!important;border-color:#65304e!important;color:#ff9eb4!important}
+.chat{background:#10162b!important;border-color:#ffffff14!important;box-shadow:0 12px 45px #0003!important}
+.chatHeader{background:rgba(16,22,43,.97)!important;border-color:#ffffff12!important}
+.chatTitle{color:#f2f3ff!important}.chatSub{color:#98a4c5!important}
+.messages{background:radial-gradient(ellipse at 50% 0,#211d43 0,transparent 55%),#10162b!important;color:#eef0ff!important}
+.empty{background:linear-gradient(145deg,#171e39,#10162c)!important;border-color:#ffffff14!important;color:#b8c2e3!important;box-shadow:0 16px 45px #0003!important}
+.message{background:linear-gradient(145deg,#1b2442,#141b32)!important;border-color:#ffffff12!important;color:#f1f2ff!important}
+.message.mine{background:linear-gradient(135deg,#635de7,#8157ce)!important;border-color:#8e83ff!important;color:#fff!important}
+.messageText{color:inherit!important}.messageSender{color:#b9c4e8!important}.message.mine .messageSender{color:#fff!important}
+.messageTime{color:#aab5d5!important}.message.mine .messageTime{color:#e8e2ff!important}
+.composer{background:rgba(13,18,36,.98)!important;border-color:#ffffff12!important}
+.composer input[type=text],.authbox input,.modalBox input,.authbox input[type=password]{background:#0b1021!important;color:#f4f5ff!important;border-color:#343d62!important}
+.composer input[type=text]::placeholder,.authbox input::placeholder,.modalBox input::placeholder{color:#8994b7!important}
+.composer .tool{background:#1a2140!important;color:#eeeaff!important;border-color:#ffffff14!important}
+.auth{background:radial-gradient(ellipse at 50% 0,#29265b 0,transparent 48%),#080b16!important}
+.authbox,.modalBox{background:rgba(17,23,43,.98)!important;color:#f1f2ff!important;border-color:#ffffff18!important;box-shadow:0 28px 90px #0006!important}
+.subtitle,.statusline{color:#98a4c5!important}.modalBox h2{color:#f1f2ff!important}
+.modal{background:#050713bd!important}.choice,.request{background:#191f3b!important;border-color:#ffffff14!important;color:#e8eaff!important}
+.modalButtons button.cancel{background:#242a45!important;color:#e2e5ff!important}
+.badge{background:#ee5e86!important;color:#fff!important}
+input,textarea,select{color-scheme:dark}
+</style>
+
 </head>
 <body>
 <div id="auth" class="auth">
