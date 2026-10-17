@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>T-Sholick - Arkadaşlarınla Özel Sohbet</title>
-<meta name="description" content="T-Sholick, arkadaşlarınla özel mesajlaşabileceğin ve gruplar oluşturabileceğin çevrimiçi sohbet platformu.">
+<title>T-Sholick</title>
 
 <style>
 :root{color-scheme:dark;--bg:#0b0f14;--panel:#10161d;--panel2:#161e27;--line:#26303b;--blue:#2589ed;--muted:#8996a5;--green:#45d483}
@@ -716,6 +715,19 @@ button:focus-visible,input:focus-visible{outline:2px solid #91a0ff;outline-offse
 .messageReaction{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:3px 8px;border-radius:14px;background:#e9487020;border:1px solid #e9487040;font-size:13px;min-height:24px}
 .messageReaction:empty{display:none}
 .heartBurst{position:absolute;z-index:5;pointer-events:none;font-size:48px;animation:heartBurst .7s ease-out forwards;left:50%;top:45%;transform:translate(-50%,-50%)}
+
+/* Instagram-style typing + seen */
+.typingBubble{display:none;align-items:center;gap:8px;align-self:flex-start;margin:0 0 2px 40px;color:#aeb9d3;font-size:12px}
+.typingBubble.show{display:flex}
+.typingBubble .typingAvatar{width:28px;height:28px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#26344e;border:1px solid #ffffff16;flex:0 0 28px}
+.typingBubble .typingAvatar img{width:100%;height:100%;object-fit:cover}
+.typingDots{display:flex;align-items:center;gap:3px;padding:9px 12px;border-radius:16px;background:#18243a;border:1px solid #ffffff12;box-shadow:0 5px 16px #0002}
+.typingDots i{width:5px;height:5px;border-radius:50%;background:#aeb9d3;display:block;animation:typingDot 1.2s infinite ease-in-out}
+.typingDots i:nth-child(2){animation-delay:.15s}.typingDots i:nth-child(3){animation-delay:.3s}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-3px);opacity:1}}
+.seenStatus{display:block;margin-top:4px;font-size:9px;color:#cbd3ff;text-align:right;opacity:.8}
+.message.mine .seenStatus{color:#e7eaff}
+@media(max-width:750px){.typingBubble{margin-left:35px}.seenStatus{font-size:9px}}
 @keyframes heartBurst{0%{opacity:0;transform:translate(-50%,-35%) scale(.35)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-85%) scale(.8)}}
 .messageEditInput{width:100%;min-width:180px;background:#101923;color:#fff;border:1px solid #4c83c8;border-radius:8px;padding:8px;resize:vertical}
 
@@ -919,6 +931,9 @@ let friends = {};
 let groups = {};
 let currentChat = null;
 let messageListener = null;
+let typingListener = null;
+let typingTimer = null;
+let typingWriteTimer = null;
 let listenerStops = [];
 let sending = false;
 let avatarData = null;
@@ -933,7 +948,12 @@ function showError(s) {
 function stopAllListeners() {
   listenerStops.forEach(f => f());
   listenerStops = [];
-  messageListener = null;
+  if (messageListener) { messageListener(); messageListener = null; }
+  if (typingListener) { typingListener(); typingListener = null; }
+  if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+  if (typingWriteTimer) { clearTimeout(typingWriteTimer); typingWriteTimer = null; }
+  const ts = $("typingStatus");
+  if (ts) ts.innerHTML = "";
 }
 function addStop(f) {
   listenerStops.push(f);
@@ -1242,12 +1262,19 @@ function openPrivate(k, u) {
 }
 
 $("publicChatButton").onclick = openPublicChat;
+$("publicChatButton").addEventListener("touchend", e => {
+  e.preventDefault();
+  openPublicChat(e);
+}, { passive: false });
 
-function openPublicChat() {
+function openPublicChat(e) {
+  if (e) e.preventDefault();
   currentChat = { type: "public", id: "global", title: "Genel Sohbet" };
+  $("app").classList.add("mobile-chat");
   setChatHeader("🌐 Genel Sohbet", "Tüm kullanıcılarla sohbet et", { username: "🌐" });
   listenMessages();
   markRead();
+  requestAnimationFrame(() => { $("messages").scrollTop = $("messages").scrollHeight; });
 }
 
 function loadGroups() {
@@ -1332,20 +1359,86 @@ function getMessagesRef() {
   return ref(db, `groups/${currentChat.id}/messages`);
 }
 
+function chatPresenceKey() {
+  if (!currentChat) return null;
+  if (currentChat.type === "private") return `private_${currentChat.id}`;
+  if (currentChat.type === "group") return `group_${currentChat.id}`;
+  return "public";
+}
+
+function listenTyping() {
+  if (typingListener) { typingListener(); typingListener = null; }
+  const status = $("typingStatus");
+  status.innerHTML = "";
+  if (!currentChat) return;
+  const key = chatPresenceKey();
+  const typingRef = ref(db, `typing/${key}`);
+  typingListener = onValue(typingRef, snap => {
+    const data = snap.val() || {};
+    const active = Object.entries(data).filter(([k,v]) => k !== meUser.usernameKey && v && Date.now() - Number(v) < 5000);
+    if (!active.length) { status.innerHTML = ""; return; }
+    const [firstKey] = active[0];
+    const u = users[firstKey] || { username: firstKey };
+    const wrap = document.createElement("div");
+    wrap.className = "typingBubble show";
+    const av = document.createElement("div");
+    av.className = "typingAvatar";
+    showAvatar(av, u);
+    const dots = document.createElement("div");
+    dots.className = "typingDots";
+    dots.innerHTML = "<i></i><i></i><i></i>";
+    wrap.append(av, dots);
+    status.replaceChildren(wrap);
+  });
+}
+
+function setTyping(active) {
+  if (!meUser || !currentChat) return;
+  const key = chatPresenceKey();
+  const typingRef = ref(db, `typing/${key}/${meUser.usernameKey}`);
+  if (typingTimer) clearTimeout(typingTimer);
+  if (!active) {
+    set(typingRef, null).catch(() => {});
+    return;
+  }
+  set(typingRef, Date.now()).catch(() => {});
+  typingTimer = setTimeout(() => setTyping(false), 2200);
+}
+
 function listenMessages() {
   if (messageListener) {
     messageListener();
     messageListener = null;
   }
+  listenTyping();
   $("messages").innerHTML = '<div class="empty">Mesajlar yükleniyor...</div>';
   messageListener = onValue(
     getMessagesRef(),
-    s => renderMessages(s.val() || {}),
+    async s => {
+      const data = s.val() || {};
+      renderMessages(data);
+      await markMessagesSeen(data);
+    },
     e => {
       $("messages").innerHTML = '<div class="empty">Mesajlar yüklenemedi. Veritabanı kurallarını kontrol et.</div>';
       console.error(e);
     }
   );
+}
+
+async function markMessagesSeen(data) {
+  if (!meUser || !currentChat) return;
+  // Görüldü bilgisi özel sohbetlerde tutulur; genel/grup sohbetinde herkese yazmak gereksizdir.
+  if (currentChat.type !== "private") return;
+  const changes = {};
+  Object.entries(data).forEach(([id, m]) => {
+    if (m?.senderId && m.senderId !== meUser.usernameKey && !m.seen?.[meUser.usernameKey]) {
+      changes[`chats/${currentChat.id}/messages/${id}/seen/${meUser.usernameKey}`] = Date.now();
+    }
+  });
+  if (Object.keys(changes).length) {
+    try { await update(ref(db), changes); } catch (e) { console.warn("Görüldü işareti yazılamadı", e); }
+  }
 }
 
 function renderMessages(data) {
@@ -1484,6 +1577,13 @@ function renderMessages(data) {
       ? new Date(m.createdAt).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
       : "") + (m.editedAt ? " · düzenlendi" : "");
     d.appendChild(tm);
+
+    if (mine && currentChat.type === "private" && currentChat.otherKey && m.seen?.[currentChat.otherKey]) {
+      const seen = document.createElement("div");
+      seen.className = "seenStatus";
+      seen.textContent = "Görüldü";
+      d.appendChild(seen);
+    }
     line.append(av, d);
     box.appendChild(line);
   });
@@ -1509,6 +1609,7 @@ async function sendMessage(attachment = null) {
       ...(attachment ? { attachment } : {})
     });
     input.value = "";
+    setTyping(false);
 
     if (currentChat.type === "private") {
       const other = currentChat.otherKey;
@@ -1530,6 +1631,11 @@ async function sendMessage(attachment = null) {
 }
 
 $("send").onclick = () => sendMessage();
+$("message").addEventListener("input", () => {
+  const value = $("message").value;
+  setTyping(!!value.trim());
+});
+$("message").addEventListener("blur", () => setTyping(false));
 $("message").addEventListener("keydown", e => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -1688,6 +1794,8 @@ $("back").onclick = () => {
     messageListener();
     messageListener = null;
   }
+  if (typingListener) { typingListener(); typingListener = null; }
+  setTyping(false);
   currentChat = null;
   $("message").disabled = true;
   $("send").disabled = true;
