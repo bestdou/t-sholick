@@ -933,7 +933,6 @@ let currentChat = null;
 let messageListener = null;
 let typingListener = null;
 let typingTimer = null;
-let typingWriteTimer = null;
 let listenerStops = [];
 let sending = false;
 let avatarData = null;
@@ -951,7 +950,6 @@ function stopAllListeners() {
   if (messageListener) { messageListener(); messageListener = null; }
   if (typingListener) { typingListener(); typingListener = null; }
   if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
-  if (typingWriteTimer) { clearTimeout(typingWriteTimer); typingWriteTimer = null; }
   const ts = $("typingStatus");
   if (ts) ts.innerHTML = "";
 }
@@ -1264,6 +1262,7 @@ function openPrivate(k, u) {
 $("publicChatButton").onclick = openPublicChat;
 $("publicChatButton").addEventListener("touchend", e => {
   e.preventDefault();
+  e.stopPropagation();
   openPublicChat(e);
 }, { passive: false });
 
@@ -1402,6 +1401,7 @@ function setTyping(active) {
     return;
   }
   set(typingRef, Date.now()).catch(() => {});
+  try { onDisconnect(typingRef).remove().catch(() => {}); } catch (e) {}
   typingTimer = setTimeout(() => setTyping(false), 2200);
 }
 
